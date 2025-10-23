@@ -1,0 +1,16 @@
+version: '2'
+services:
+  jupyter-base-notebook:
+    container_name: ${JUPYTER_CONTAINER_NAME}
+    image: ${IMAGE_VERSION}
+#    command: ["tail", "-f", "/dev/null"]
+    restart: always
+    environment:
+       - XDG_RUNTIME_DIR=/tmp/runtime-jovyan
+    volumes:
+      - ${PATH_PERSISTENT_VOLUME}:/home/jovyan/work/
+    ports:
+    # Port the jupyter notebook is exposed to 
+      - ${JUPYTER_PORT}
+    # Port 5000 is used by the Flask server install from the BPTK-Py python libraries
+      - ${FLASK_PORT}
