@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0">
+	<header>
+		<product version="1.0" lang="en">Vensim</product>
+		<vendor>Ventana Systems, Inc.</vendor>
+		<created>
+		</created>
+		<modified>
+		</modified>
+		<name>
+		</name>
+		<caption>
+		</caption>
+	</header>
+	<sim_specs method="RK4" time_units="Month">
+		<start> 0</start>
+		<stop> 120</stop>
+		<dt> 1</dt>
+	</sim_specs>
+	<model>
+		<variables>
+			<stock name="number_of_automatic_vending_machines">
+				<units>Number</units>
+				<doc>An automatic vending machine is a self-service device that dispenses products such as snacks, beverages, tickets, or other items.
+These machines operate without human supervision and are commonly found in public places like offices, schools, train stations, and malls.</doc>
+					<eqn>
+					initial_number_of_automatic_vending_machines
+					</eqn>
+			</stock>
+			<stock name="number_of_fast_food_outlet_and_restaurants">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+					initial_number_of_fast_food_outlet
+					</eqn>
+			</stock>
+			<stock name="number_of_public_transport_stations">
+				<units>Number</units>
+				<doc>The following transport links are included: bus station, metro. In the event that no public transport stations are present within the area of interest at the initiation of the simulation, the model will be unable to function. Consequently, a constant of 0.001 is employed.</doc>
+					<eqn>
+					initial_number_of_public_transport_station + 0.001
+					</eqn>
+					<inflow>
+					public transport station development
+					</inflow>
+			</stock>
+			<stock name="number_of_supermakets_and_healthy_food_store">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+					initial_number_of_healthy_food_store + initial_number_of_supermarkets + 0.1
+					</eqn>
+			</stock>
+			<stock name="number_of_urban_farms">
+				<units>Number/Month</units>
+				<doc></doc>
+					<eqn>
+					initial_number_of_urban_farms
+					</eqn>
+					<inflow>
+					urban food production development
+					</inflow>
+			</stock>
+			<aux name="accessibility_and_affordability_of_public_transport">
+				<units>Dmnl</units>
+				<doc>In areas characterised by inadequate transport infrastructure, public transportation systems may incur significant costs and are often unreliable. Nevertheless, these systems persist in functioning as the sole viable mode of transportation. The accessibility and affordability of public transport are key factors in reducing pressure on politicians to invest in infrastructure. The increasing costs of public transport have a negative impact on affordability.</doc>
+					<eqn>
+	(1/(1+EXP(-10*((public_transport_station_density / optimal_public_transport_station_density - 0.5)))) + (COS(affordability_of_public_transport
+	 * 3.14159 + 3.14159) / 2 + 0.5)) / 2					</eqn>
+			</aux>
+			<aux name="accessibility_of_healthy_food_in_local_area">
+				<units>Dmnl</units>
+				<doc>If fast food outlet density is increasing the accessibilty is decreasing.
+FAO definition Access: addresses whether or not households and individuals have sufficient physical and economic access to that food, see The State of Food Security and Nutrition in the World 2022.
+This variable describes the the physical accessibilty</doc>
+					<eqn>
+	((COS(situational_or_time_constraints * 3.14159)/2 + 0.5) + (1/(1+EXP(-10*((supermarket_and_healthy_food_store_density/fast_food_outlet_density - 0.5)))))) / 2					</eqn>
+			</aux>
+			<aux name="affordability_of_public_transport">
+				<units>Dmnl</units>
+				<doc>Costs for public transport compared to individual means of transport, e.g., using a car.
+If more is invested in public transport, the costs of operating the system increase, leading to higher costs for bus and subway tickets and thus reducing relative affordability. If gasoline or diesel prices rise, the costs of individual transport increase, thereby increasing the relative affordability of public transport.
+ 
+This is modeled using a sigmoid function: when the ratio of price per km by car to price per km by public transport is equal to 1, the function should yield a value of 0.5.
+An increase in annual prices due to inflation or other conditions is not taken into account here.</doc>
+					<eqn>
+	1/(1+EXP(-10*(costs_individual_vehicle_use / costs_public_transport_use
+	-1)))					</eqn>
+			</aux>
+			<aux name="automatic_vending_machines_development">
+				<units>Number/Month</units>
+				<doc></doc>
+					<eqn>
+	new_build_rate_automatic_vending_machines					</eqn>
+			</aux>
+			<aux name="availability_of_healthy_food_in_household">
+				<units>Dmnl</units>
+				<doc>The availability of healthy foods in a household is influenced by various factors, including the availability of healthy foods in the area studied and health and cost-determined purchases. These factors are taken into account in the model, but factors caused by family circumstances, such as whether food is distributed evenly within the family, are not taken into account.</doc>
+					<eqn>
+	((COS(availability_of_healthy_food_in_local_area * 3.14159 + 3.14159)/2 + 0.5) + (COS(strategic_unhealthy_eating_habits
+	 * 3.14159)/2 + 0.5) + (COS(health_determined_purchases * 3.14159 + 3.14159)/2 + 0.5)) / 3					</eqn>
+			</aux>
+			<aux name="availability_of_healthy_food_in_local_area">
+				<units>Dmnl</units>
+				<doc>Imports and local production of healthy foods, outlets that sell healthy foods.
+Availability: addresses whether or not food is actually or potentially physically present, including aspects of production, food reserves, markets and transportation, and wild foods.</doc>
+					<eqn>
+	((COS(accessibility_of_healthy_food_in_local_area * 3.14159 + 3.14159)/2 + 0.5) + ((1/(1+EXP(-10*((production_denisty /
+	 optimal_production_density)-0.5)))))) / 3					</eqn>
+			</aux>
+			<aux name="customer_demand_for_healthy_food">
+				<units>Dmnl</units>
+				<doc></doc>
+					<eqn>
+	COS(health_determined_purchases * 3.14159 + 3.14159) / 2 + 0.5					</eqn>
+			</aux>
+			<aux name="fast_food_outlet_density">
+				<units>Number/km2</units>
+				<doc></doc>
+					<eqn>
+	(number_of_fast_food_outlet_and_restaurants + number_of_automatic_vending_machines) / residential_area + 0.1					</eqn>
+			</aux>
+			<aux name="fast_food_outlet_development">
+				<units>Number/Month</units>
+				<doc></doc>
+					<eqn>
+	new_build_rate_fast_food_outlet					</eqn>
+			</aux>
+			<aux name="financial_management">
+				<units>Dmnl</units>
+				<doc>The financial management of a household is contingent on the cost of living incurred through housing.</doc>
+					<eqn>
+	COS(pressure_on_cost_of_living * 3.14159)/2 + 0.5					</eqn>
+			</aux>
+			<aux name="health_determined_purchases">
+				<units>Dmnl</units>
+				<doc></doc>
+					<eqn>
+	COS(willingness_to_pay_for_healthy_foods * 3.14159 + 3.14159)/2 + 0.5					</eqn>
+			</aux>
+			<aux name="household_circumstances_food_insecurity">
+				<units>Number/km2</units>
+				<doc>Household circumstances food insecurity arises when structural and demographic risk factors—such as household type, housing burden, and immigration status—combine to reduce a household’s ability to access or afford adequate, nutritious food.</doc>
+					<eqn>
+	household_type_risk + housing_situation_risk + immigration_status_risk + intercept_simple					</eqn>
+			</aux>
+			<aux name="household_food_insecurity">
+				<units>Dmnl</units>
+				<doc>Household food insecurity represents the predicted proportion of households living in food insecurity in the area. This is determined by the physical infrastructure in which people live, their financial resources, and their household circumstances, such as whether they live in a single-family household or are a single parent.</doc>
+					<eqn>
+	((COS(insufficient_food_budget * 3.14159 + 3.14159)/2 + 0.5) + (COS(availability_of_healthy_food_in_household
+	 * 3.14159)/2 + 0.5) + (COS(household_circumstances_food_insecurity * 3.14159 + 3.14159)/2 + 0.5)) 
+	/ 3					</eqn>
+			</aux>
+			<aux name="household_type_risk">
+				<units>Dmnl</units>
+				<doc>Household situation: Common-law couples, Couple without children, Multigenerational, Single person living alone, Single-parent, Two-parent</doc>
+					<eqn>
+	(c_couple_without_children * initial_couple_without_children + c_multigenerational * initial_multigenerational + c_single_parent
+	 * initial_single_parent + c_single_person_living_alone * initial_single_person_living_alone + c_two_parent * initial_two_parent)/initial_total_household_types					</eqn>
+			</aux>
+			<aux name="housing_situation_risk">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+	(c_owner * initial_owner + c_private_rental_market * initial_private_rental_market + c_subsidized_housing * initial_subsidized_housing)/initial_total_household_types					</eqn>
+			</aux>
+			<aux name="immigration_status_risk">
+				<units></units>
+				<doc></doc>
+					<eqn>
+	(c_immigrants * initial_immigrants + c_non_immigrants * initial_non_immigrants + c_non_permanent_residents * initial_non_permanent_residents)/initial_total_household_types					</eqn>
+			</aux>
+			<aux name="initial_private_rental_market">
+				<units>Number</units>
+				<doc>Total - Tenant households in non-farm, non-reserve private dwellings - 25% sample data CHARACTERISTIC_ID = 1490 in the census data set.</doc>
+					<eqn>
+	initial_total_private_rental_market * (1 - percent_of_tenant_households_in_subsidized_housing)					</eqn>
+			</aux>
+			<aux name="initial_subsidized_housing">
+				<units>Number</units>
+				<doc>Total of tenant households in subsidized housing CHARACTERISTIC_ID = 1491 in the census data set.</doc>
+					<eqn>
+	percent_of_tenant_households_in_subsidized_housing * initial_total_private_rental_market					</eqn>
+			</aux>
+			<aux name="insufficient_food_budget">
+				<units>Dmnl</units>
+				<doc></doc>
+					<eqn>
+	((COS(pressure_on_cost_of_living * 3.14159 + 3.14159)/2 + 0.5) + (COS(financial_management * 3.14159)/2 + 0.5)) / 2					</eqn>
+			</aux>
+			<aux name="living_cost_burden">
+				<units>Dmnl</units>
+				<doc>Living cost burden refers to the proportion of a household’s income spent on essential expenses like housing, food, utilities, and transportation. A high burden indicates limited financial flexibility and increased economic vulnerability.</doc>
+					<eqn>
+	((COS(pressure_on_cost_of_living * 3.14159 + 3.14159)/2 + 0.5) + (COS(insufficient_food_budget * 3.14159 + 3.14159)/2 +
+	 0.5) + (COS(affordability_of_public_transport * 3.14159)/2 + 0.5)) / 3					</eqn>
+			</aux>
+			<aux name="local_market_pressure">
+				<units>Dmnl</units>
+				<doc></doc>
+					<eqn>
+	((COS(need_to_shop_outside_locality * 3.14159 + 3.14159)/2 + 0.5) + (COS(customer_demand_for_healthy_food * 3.14159 + 3.14159)/2 + 0.5)) / 2					</eqn>
+			</aux>
+			<aux name="need_to_shop_outside_locality">
+				<units>Dmnl</units>
+				<doc>Evidence suggests that residents in low-income neighbourhoods more often need to shop outside their locality but have limited access to private vehicles and rely heavily on public transport. This parameter describes the pressure of residents to leave their neibourhoods to by healthy and affordable foods. A value of 0 indicates that the people can do their grocery within the area, a value of 1 indicates that the people need to live the area.</doc>
+					<eqn>
+	COS(availability_of_healthy_food_in_local_area * 3.14159)/2 + 0.5					</eqn>
+			</aux>
+			<aux name="objective_relative_cost_of_healthy_food">
+				<units>Dmnl</units>
+				<doc>Hier sollten / können die Census Daten verarbeitet werden.
+Siehe hier auch eine Quelle: https://openknowledge.fao.org/server/api/core/bitstreams/046eb34f-187d-4ba0-a752-ba08ba2c1693/content.
+Das Verhältnis von gesunden zu ungesunden Lebensmitteln in einem Gebiet bestimmt auch die die objektiven Kosten in dem Gebiet sind. Üblicherweise sind werden ungesunde Lebensmittel an Orten angeboten die teurer sind als Lebensmittel in Supermärkten.</doc>
+					<eqn>
+	COS(availability_of_healthy_food_in_local_area * 3.14159)/2 + 0.5					</eqn>
+			</aux>
+			<aux name="perceived_affordability_of_healthy_food">
+				<units>Dmnl</units>
+				<doc>fast food outlet density could be also compared with an optimal denisty, or the supermarket and healthy food stor density could be here as well integrated.</doc>
+					<eqn>
+	((COS(availability_of_healthy_food_in_local_area * 3.14159 + 3.14159)/2 + 0.5) + (COS(objective_relative_cost_of_healthy_food
+	 * 3.14159)/2 + 0.5) + (1/(1+EXP(-10*((fast_food_outlet_density)-0.5)))) + (COS(insufficient_food_budget * 3.14159)/
+	2 + 0.5)) / 4					</eqn>
+			</aux>
+			<aux name="pressure_on_cost_of_living">
+				<units>Dmnl</units>
+				<doc>Households that are able to maintain a financially stable situation are advised to allocate no more than 30% of their income toward shelter costs. This variable indicates the number of households that expend more than 30% of their income on shelter expenses. An increasing value of this variable suggests that the population in the specified area is experiencing a critical situation.</doc>
+					<eqn>
+	shelter_costs_more_than_30_percent / (shelter_costs_more_than_30_percent + shelter_costs_less_than_30_percent)					</eqn>
+			</aux>
+			<aux name="pressure_on_policy_for_public_transport_development">
+				<units>Dmnl</units>
+				<doc>The pressure on policy to invest in public transport infrastructure is influenced by accessibility and affordability, as well as the need for people to shop outside their locality.
+It is important to acknowledge that there are a multitude of factors that exert influence on this variable. This is a limitation of the model.</doc>
+					<eqn>
+	(1*(COS(need_to_shop_outside_locality * 3.14159 + 3.14159) / 2 + 0.5) + (COS(accessibility_and_affordability_of_public_transport * 3.14159) / 2 + 0.5)) / 2					</eqn>
+			</aux>
+			<aux name="production_denisty">
+				<units></units>
+				<doc></doc>
+					<eqn>
+	number_of_urban_farms / residential_area					</eqn>
+			</aux>
+			<aux name="public_transport_station_density">
+				<units>Number/km2</units>
+				<doc></doc>
+					<eqn>
+	number_of_public_transport_stations / residential_area					</eqn>
+			</aux>
+			<aux name="public_transport_station_development">
+				<units>Number/Month</units>
+				<doc>This flow is used to determine the number of public transport stations. It can take positive or negative values, which means that if the pressure on policy is 0.5, there will be no increase or decrease in the number of stations. The presence of high pressure results in an expansion of the infrastructure, while low pressure leads to a reduction in infrastructure.</doc>
+					<eqn>
+	new_build_rate_of_public_transport_stations * COS(pressure_on_policy_for_public_transport_development * 3.14159 + 3.14159)					</eqn>
+			</aux>
+			<aux name="shelter_costs_less_than_30_percent">
+				<units>Number</units>
+				<doc>Number of households (owner and tentant) spending less than 30% of household income on shelter costs.
+Census data ID 1466.
+39242 Ville Marie</doc>
+					<eqn>
+	39242 + 23426 - shelter_costs_more_than_30_percent					</eqn>
+			</aux>
+			<aux name="situational_or_time_constraints">
+				<units>Dmnl</units>
+				<doc>"situational or time constraints (including public transport and child care)"
+Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't by the food at the time they have time to shop, the time constrain in increasing.</doc>
+					<eqn>
+	(COS(opening_hours_of_supermarkets_daily_stores * 3.14159)/2 + 0.5 + COS(accessibility_and_affordability_of_public_transport * 3.14159)/2 + 0.5) / 2					</eqn>
+			</aux>
+			<aux name="strategic_unhealthy_eating_habits">
+				<units>Dmnl</units>
+				<doc>There can be several reasons for strategic unhealthy eating habits. In contexts of food insecurity, people often adopt different strategies to cope with the situation. They prioritise quantity over nutrition, skip meals to stretch their food supply or overeat when food is available.</doc>
+					<eqn>
+	((COS(financial_management * 3.14159 + 3.14159)/2 + 0.5) + (COS(insufficient_food_budget * 3.14159 + 3.14159)/2 + 0.5)) / 2					</eqn>
+			</aux>
+			<aux name="supermarket_and_healthy_food_store_density">
+				<units>Number/km2</units>
+				<doc></doc>
+					<eqn>
+	number_of_supermakets_and_healthy_food_store / residential_area					</eqn>
+			</aux>
+			<aux name="supermarket_and_healthy_food_store_development">
+				<units>Number/Month</units>
+				<doc></doc>
+					<eqn>
+	new_build_rate_supermarket_and_healthy_food_store * (COS(local_market_pressure * 3.14159 + 3.14159) + COS(negative_perceptions_of_local_area * 3.14159) + COS(residential_or_geographical_segregation * 3.14159)) / 3					</eqn>
+			</aux>
+			<aux name="urban_food_production_development">
+				<units>Number/Month</units>
+				<doc></doc>
+					<eqn>
+	new_build_rate_urban_farms_CG * COS(customer_demand_for_healthy_food * 3.14159 + 3.14159)					</eqn>
+			</aux>
+			<aux name="vulnerability_to_fluctuation_in_living_costs">
+				<units>Dmnl</units>
+				<doc>Vulnerability to fluctuation in living costs refers to how sensitive a household is to changes in essential expenses—like rent, food, or energy. Households with low incomes or tight budgets face higher risk of hardship when costs rise unexpectedly.</doc>
+					<eqn>
+	(COS(living_cost_burden * 3.14159 + 3.14159)/2 + 0.5)					</eqn>
+			</aux>
+			<aux name="willingness_to_pay_for_healthy_foods">
+				<units>Dmnl</units>
+				<doc></doc>
+					<eqn>
+	((COS(perceived_affordability_of_healthy_food * 3.14159 + 3.14159)/2 + 0.5) + (COS(vulnerability_to_fluctuation_in_living_costs
+	 * 3.14159)/2 + 0.5) + (COS(insufficient_food_budget * 3.14159)/2 + 0.5)) / 3					</eqn>
+			</aux>
+			<aux name="c_couple_without_children">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.006736					</eqn>
+			</aux>
+			<aux name="c_immigrants">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.035312					</eqn>
+			</aux>
+			<aux name="c_multigenerational">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.004491					</eqn>
+			</aux>
+			<aux name="c_non_immigrants">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.031434					</eqn>
+			</aux>
+			<aux name="c_non_permanent_residents">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.033475					</eqn>
+			</aux>
+			<aux name="c_owner">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.002041					</eqn>
+			</aux>
+			<aux name="c_private_rental_market">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.073278					</eqn>
+			</aux>
+			<aux name="c_single_parent">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.012655					</eqn>
+			</aux>
+			<aux name="c_single_person_living_alone">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.006736					</eqn>
+			</aux>
+			<aux name="c_subsidized_housing">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.015717					</eqn>
+			</aux>
+			<aux name="c_two_parent">
+				<units>Dmnl</units>
+				<doc>Determined using regression analysis, specific value for Montreal.</doc>
+					<eqn>
+	0.034904					</eqn>
+			</aux>
+			<aux name="coeff_household">
+				<units></units>
+				<doc></doc>
+					<eqn>
+	3.20924					</eqn>
+			</aux>
+			<aux name="coeff_housing">
+				<units></units>
+				<doc></doc>
+					<eqn>
+	0.502839					</eqn>
+			</aux>
+			<aux name="coeff_immi">
+				<units></units>
+				<doc></doc>
+					<eqn>
+	-0.146239					</eqn>
+			</aux>
+			<aux name="costs_individual_vehicle_use">
+				<units>CAD/km</units>
+				<doc>0.72</doc>
+					<eqn>
+	0.5					</eqn>
+			</aux>
+			<aux name="costs_public_transport_use">
+				<units>CAD/km</units>
+				<doc>0.47</doc>
+					<eqn>
+	0.5					</eqn>
+			</aux>
+			<aux name="initial_couple_without_children">
+				<units>Number</units>
+				<doc>Total number of couples without children CHARACTERISTIC_ID = 104 in the census data set.
+13040 Ville Marie</doc>
+					<eqn>
+	13040					</eqn>
+			</aux>
+			<aux name="initial_immigrants">
+				<units>Number</units>
+				<doc>Total number of immigrants CHARACTERISTIC_ID = 1529 in the census data set.</doc>
+					<eqn>
+	32940					</eqn>
+			</aux>
+			<aux name="initial_multigenerational">
+				<units>Number</units>
+				<doc>Total number of multigenerational households CHARACTERISTIC_ID = 106 in the censu data set.</doc>
+					<eqn>
+	238					</eqn>
+			</aux>
+			<aux name="initial_non_immigrants">
+				<units>Number</units>
+				<doc>Total number of non-immigrants CHARACTERISTIC_ID = 1528 in the census data set.</doc>
+					<eqn>
+	55054					</eqn>
+			</aux>
+			<aux name="initial_non_permanent_residents">
+				<units>Number</units>
+				<doc>Total number of non-permanent residents CHARACTERISTIC_ID = 1537 in the census data set.</doc>
+					<eqn>
+	20117					</eqn>
+			</aux>
+			<aux name="initial_number_of_automatic_vending_machines">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+	0					</eqn>
+			</aux>
+			<aux name="initial_number_of_fast_food_outlet">
+				<units>Number</units>
+				<doc>Get value from POSTGIS database. Depends on the area of interest.
+1527 Ville Marie (358)</doc>
+					<eqn>
+	1527					</eqn>
+			</aux>
+			<aux name="initial_number_of_healthy_food_store">
+				<units>Number</units>
+				<doc>The value will be imported from the data base and depends on the area of interest.
+35 Ville Marie</doc>
+					<eqn>
+	35					</eqn>
+			</aux>
+			<aux name="initial_number_of_public_transport_station">
+				<units>Number</units>
+				<doc>The value will be imported from the GIS.
+538 Ville Marie</doc>
+					<eqn>
+	538					</eqn>
+			</aux>
+			<aux name="initial_number_of_supermarkets">
+				<units>Number</units>
+				<doc>The value will be imported from the data base and depends on the area of interest.
+313 Ville Marie</doc>
+					<eqn>
+	313					</eqn>
+			</aux>
+			<aux name="initial_number_of_urban_farms">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+	0					</eqn>
+			</aux>
+			<aux name="initial_owner">
+				<units>Number</units>
+				<doc>Total number of owner households in non-farm, non-reserve private dwellings - 25% sample data CHARACTERISTIC_ID = 1482 in the census data set.</doc>
+					<eqn>
+	18507					</eqn>
+			</aux>
+			<aux name="initial_single_parent">
+				<units>Number</units>
+				<doc>Total number of one-parent family households CHARACTERISTIC_ID = 105 in the census data set.</doc>
+					<eqn>
+	3186					</eqn>
+			</aux>
+			<aux name="initial_single_person_living_alone">
+				<units>Number</units>
+				<doc>Total number of one-person households CHARACTERISTIC_ID = 110 in the census data set.</doc>
+					<eqn>
+	35456					</eqn>
+			</aux>
+			<aux name="initial_total_household_types">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+	64619					</eqn>
+			</aux>
+			<aux name="initial_total_immigration_status">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+	108112					</eqn>
+			</aux>
+			<aux name="initial_total_private_rental_market">
+				<units>Number</units>
+				<doc>Total - Owner households in non-farm, non-reserve private dwellings - 25% sample data CHARACTERISTIC_ID = 1482 in the census data set.</doc>
+					<eqn>
+	46075					</eqn>
+			</aux>
+			<aux name="initial_two_parent">
+				<units>Number</units>
+				<doc>Total number of couples with children CHARACTERISTIC_ID = 103 in the census data set
+5603 Ville Marie</doc>
+					<eqn>
+	5603					</eqn>
+			</aux>
+			<aux name="intercept_simple">
+				<units>Dmnl</units>
+				<doc></doc>
+					<eqn>
+	0.00470216					</eqn>
+			</aux>
+			<aux name="negative_perceptions_of_local_area">
+				<units>Dmnl</units>
+				<doc>crime rate</doc>
+					<eqn>
+	0.5					</eqn>
+			</aux>
+			<aux name="new_build_rate_automatic_vending_machines">
+				<units>Number/Month</units>
+				<doc></doc>
+					<eqn>
+	0					</eqn>
+			</aux>
+			<aux name="new_build_rate_fast_food_outlet">
+				<units>Number/Month</units>
+				<doc>new outlet opening - outlet closing</doc>
+					<eqn>
+	2					</eqn>
+			</aux>
+			<aux name="new_build_rate_of_public_transport_stations">
+				<units>Number/Month</units>
+				<doc>The number of public transport stops, e.g., bus stops or subway stations, that can be newly constructed in the area concerned. This variable depends on several factors, such as the financial capacity of companies or the skills of their employees in relation to working on construction sites. This figure represents the maximum potential number of stops that can be newly constructed or dismantled.</doc>
+					<eqn>
+	0.01					</eqn>
+			</aux>
+			<aux name="new_build_rate_supermarket_and_healthy_food_store">
+				<units>Number/Month</units>
+				<doc>Average value determined from the Montreal business dataset for the last 10 years.</doc>
+					<eqn>
+	2					</eqn>
+			</aux>
+			<aux name="new_build_rate_urban_farms_CG">
+				<units>Number/Month</units>
+				<doc></doc>
+					<eqn>
+	0					</eqn>
+			</aux>
+			<aux name="opening_hours_of_supermarkets_daily_stores">
+				<units>Dmnl</units>
+				<doc></doc>
+					<eqn>
+	0.5					</eqn>
+			</aux>
+			<aux name="optimal_production_density">
+				<units></units>
+				<doc></doc>
+					<eqn>
+	0.2					</eqn>
+			</aux>
+			<aux name="optimal_public_transport_station_density">
+				<units>Number/km2</units>
+				<doc>The optimal transport station density can be derived from the 15 minutes concept.</doc>
+					<eqn>
+	8					</eqn>
+			</aux>
+			<aux name="percent_of_tenant_households_in_subsidized_housing">
+				<units>Dmnl</units>
+				<doc>% of tenant households in subsidized housing CHARACTERISTIC_ID = 1491 in the census data set.</doc>
+					<eqn>
+	0.2					</eqn>
+			</aux>
+			<aux name="residential_area">
+				<units>km2</units>
+				<doc>Residential area 
+3.86889 Ville Marie</doc>
+					<eqn>
+	3.86889					</eqn>
+			</aux>
+			<aux name="residential_or_geographical_segregation">
+				<units>Dmnl</units>
+				<doc>Gini + others</doc>
+					<eqn>
+	0.5					</eqn>
+			</aux>
+			<aux name="residential_segregation">
+				<units>Dmnl</units>
+				<doc>The residential segregation is represented by the calculation of the Multigroup Segregation Index. The value is representing the overall segregation across all groups in an area.</doc>
+					<eqn>
+	0.5					</eqn>
+			</aux>
+			<aux name="shelter_costs_more_than_30_percent">
+				<units>Dmnl</units>
+				<doc>Number of households (owner and tentant) spending 30% or more of income on shelter costs.
+Census data ID 1467
+23426 Ville Marie</doc>
+					<eqn>
+	23426					</eqn>
+			</aux>
+		</variables>
+	</model>
+</xmile>
