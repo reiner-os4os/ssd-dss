@@ -4,8 +4,12 @@ class ScenarioClass:
 
     def __init__(self, city, borough_name, newBuildRateSupermarketAndHealthyFoodStore, \
                  newBuildRateFastFoodOutlet, newBuildRatePublicTransport,\
-                 newBuildRateUrbanFarms, timeToAdjustCostsOfPublicTransport,\
-                 optimalTransportStationDensity, localArea, localIniHealthyFoodStore, \
+                 newBuildRateUrbanFarmsCg, optimalPublicTransportStationDensity,\
+                 costsPublicTransportUse, costsIndividualVehicleUse,\
+                 negativePerceptionsOfLocalArea, residentialOrGeographicalSegregation,\
+                 openingHoursOfSupermarketsDailyStores, optimalProductionDensity,\
+                 reductionInShelterCosts, \
+                 localArea, localIniHealthyFoodStore, \
                  localIniSupermarkets, localIniFastFoodOutlet, localIniPublicTransportStation, \
                  localIniShelterCostsLessThan30Percent, localIniShelterCostsMore30Percent, localResidentialArea, \
                  localIniCoupleWithoutChildren, localIniTwoParent, localIniSingleParent, localIniMultigenerational, \
@@ -18,9 +22,15 @@ class ScenarioClass:
         self.newBuildRateSupermarketAndHealthyFoodStore = newBuildRateSupermarketAndHealthyFoodStore
         self.newBuildRateFastFoodOutlet = newBuildRateFastFoodOutlet
         self.newBuildRatePublicTransport = newBuildRatePublicTransport
-        self.newBuildRateUrbanFarms = newBuildRateUrbanFarms
-        self.timeToAdjustCostsOfPublicTransport= timeToAdjustCostsOfPublicTransport
-        self.optimalTransportStationDensity = optimalTransportStationDensity
+        self.newBuildRateUrbanFarmsCg = newBuildRateUrbanFarmsCg
+        self.optimalPublicTransportStationDensity = optimalPublicTransportStationDensity
+        self.negativePerceptionsOfLocalArea = negativePerceptionsOfLocalArea
+        self.residentialOrGeographicalSegregation = residentialOrGeographicalSegregation
+        self.costsPublicTransportUse = costsPublicTransportUse
+        self.costsIndividualVehicleUse = costsIndividualVehicleUse
+        self.openingHoursOfSupermarketsDailyStores = openingHoursOfSupermarketsDailyStores
+        self.optimalProductionDensity = optimalProductionDensity
+        self.reductionInShelterCosts = reductionInShelterCosts
         self.localArea = localArea
         self.localIniHealthyFoodStore = localIniHealthyFoodStore
         self.localIniSupermarkets = localIniSupermarkets
@@ -46,8 +56,12 @@ class ScenarioClass:
 
     def write_scenario(self, newBuildRateSupermarketAndHealthyFoodStore, \
                        newBuildRateFastFoodOutlet, newBuildRatePublicTransport, \
-                       newBuildRateUrbanFarms, timeToAdjustCostsOfPublicTransport,\
-                       optimalTransportStationDensity, localArea, localIniHealthyFoodStore, \
+                       newBuildRateUrbanFarmsCg, optimalPublicTransportStationDensity, \
+                       costsPublicTransportUse, costsIndividualVehicleUse,\
+                       negativePerceptionsOfLocalArea, residentialOrGeographicalSegregation,\
+                       openingHoursOfSupermarketsDailyStores, optimalProductionDensity,\
+                       reductionInShelterCosts, \
+                       localArea, localIniHealthyFoodStore, \
                        localIniSupermarkets, localIniFastFoodOutlet, localIniPublicTransportStation, \
                        localIniShelterCostsLessThan30Percent, localIniShelterCostsMore30Percent, localResidentialArea, \
                        localIniCoupleWithoutChildren, localIniTwoParent, localIniSingleParent, localIniMultigenerational, \
@@ -65,9 +79,15 @@ class ScenarioClass:
         data['food_security']['scenarios']['base']['constants']['newBuildRateSupermarketAndHealthyFoodStore'] = newBuildRateSupermarketAndHealthyFoodStore
         data['food_security']['scenarios']['base']['constants']['newBuildRateFastFoodOutlet'] = newBuildRateFastFoodOutlet
         data['food_security']['scenarios']['base']['constants']['newBuildRatePublicTransport'] = newBuildRatePublicTransport
-        data['food_security']['scenarios']['base']['constants']['newBuildRateUrbanFarms'] = newBuildRateUrbanFarms
-        data['food_security']['scenarios']['base']['constants']['timeToAdjustCostsOfPublicTransport'] = timeToAdjustCostsOfPublicTransport
-        data['food_security']['scenarios']['base']['constants']['optimalTransportStationDensity'] = optimalTransportStationDensity
+        data['food_security']['scenarios']['base']['constants']['newBuildRateUrbanFarmsCg'] = newBuildRateUrbanFarmsCg
+        data['food_security']['scenarios']['base']['constants']['optimalPublicTransportStationDensity'] = optimalPublicTransportStationDensity
+        data['food_security']['scenarios']['base']['constants']['negativePerceptionsOfLocalArea'] = negativePerceptionsOfLocalArea
+        data['food_security']['scenarios']['base']['constants']['residentialOrGeographicalSegregation'] = residentialOrGeographicalSegregation
+        data['food_security']['scenarios']['base']['constants']['costsPublicTransportUse'] = costsPublicTransportUse
+        data['food_security']['scenarios']['base']['constants']['costsIndividualVehicleUse'] = costsIndividualVehicleUse
+        data['food_security']['scenarios']['base']['constants']['openingHoursOfSupermarketsDailyStores'] = openingHoursOfSupermarketsDailyStores
+        data['food_security']['scenarios']['base']['constants']['optimalProductionDensity'] = optimalProductionDensity
+        data['food_security']['scenarios']['base']['constants']['reductionInShelterCosts'] = reductionInShelterCosts                       
         data['food_security']['scenarios']['base']['constants']['localArea'] = localArea
         data['food_security']['scenarios']['base']['constants']['initialNumberOfHealthyFoodStore'] = localIniHealthyFoodStore
         data['food_security']['scenarios']['base']['constants']['initialNumberOfSupermarkets'] = localIniSupermarkets

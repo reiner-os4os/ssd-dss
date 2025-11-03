@@ -53,7 +53,9 @@ def take_request(request):
     costsPublicTransportUse = data_dict['costsPublicTransportUse']
     costsIndividualVehicleUse = data_dict['costsIndividualVehicleUse']
     openingHoursOfSupermarketsDailyStores = data_dict['openingHoursOfSupermarketsDailyStores']
-    optimalProductionDensity = data_dict['optimalProductionDensity'] 
+    optimalProductionDensity = data_dict['optimalProductionDensity']
+    reductionInShelterCosts = data_dict['reductionInShelterCosts']
+    
     
 
     # Parse the JSON string, used for the POSTGIS query with NUM the number of the borough 
@@ -157,6 +159,7 @@ def take_request(request):
             f'"costsIndividualVehicleUse": {costsIndividualVehicleUse},' \
             f'"openingHoursOfSupermarketsDailyStores": {openingHoursOfSupermarketsDailyStores},' \
             f'"optimalProductionDensity": {optimalProductionDensity},' \
+            f'"reductionInShelterCosts": {reductionInShelterCosts},' \
             f'"localArea": {localArea},' \
             f'"localIniHealthyFoodStore": {localIniHealthyFoodStore},' \
             f'"localIniSupermarkets": {localIniSupermarkets}, "localIniFastFoodOutlet": {localIniFastFoodOutlet},' \
@@ -193,6 +196,7 @@ def take_request(request):
                                      obj.costsIndividualVehicleUse, \
                                      obj.openingHoursOfSupermarketsDailyStores, \
                                      obj.optimalProductionDensity, \
+                                     obj.reductionInShelterCosts, \
                                      obj.localArea, \
                                      obj.localIniHealthyFoodStore, \
                                      obj.localIniSupermarkets, \
