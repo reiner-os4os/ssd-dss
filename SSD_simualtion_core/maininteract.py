@@ -46,9 +46,15 @@ def take_request(request):
     newBuildRateSupermarketAndHealthyFoodStore = data_dict['newBuildRateSupermarketAndHealthyFoodStore']
     newBuildRateFastFoodOutlet = data_dict['newBuildRateFastFoodOutlet']
     newBuildRatePublicTransport = data_dict['newBuildRatePublicTransport']
-    newBuildRateUrbanFarms = data_dict['newBuildRateUrbanFarms']
-    timeToAdjustCostsOfPublicTransport = data_dict['timeToAdjustCostsOfPublicTransport']
-    optimalTransportStationDensity = data_dict['optimalTransportStationDensity']
+    newBuildRateUrbanFarmsCg = data_dict['newBuildRateUrbanFarmsCg']
+    optimalPublicTransportStationDensity = data_dict['optimalPublicTransportStationDensity']
+    negativePerceptionsOfLocalArea = data_dict['negativePerceptionsOfLocalArea']
+    residentialOrGeographicalSegregation = data_dict['residentialOrGeographicalSegregation']
+    costsPublicTransportUse = data_dict['costsPublicTransportUse']
+    costsIndividualVehicleUse = data_dict['costsIndividualVehicleUse']
+    openingHoursOfSupermarketsDailyStores = data_dict['openingHoursOfSupermarketsDailyStores']
+    optimalProductionDensity = data_dict['optimalProductionDensity'] 
+    
 
     # Parse the JSON string, used for the POSTGIS query with NUM the number of the borough 
     data = json.loads(request)
@@ -143,9 +149,14 @@ def take_request(request):
             f'"newBuildRateSupermarketAndHealthyFoodStore": {newBuildRateSupermarketAndHealthyFoodStore},' \
             f'"newBuildRateFastFoodOutlet": {newBuildRateFastFoodOutlet},' \
             f'"newBuildRatePublicTransport": {newBuildRatePublicTransport},' \
-            f'"newBuildRateUrbanFarms": {newBuildRateUrbanFarms},'\
-            f'"timeToAdjustCostsOfPublicTransport": {timeToAdjustCostsOfPublicTransport},' \
-            f'"optimalTransportStationDensity": {optimalTransportStationDensity},' \
+            f'"newBuildRateUrbanFarmsCg": {newBuildRateUrbanFarmsCg},'\
+            f'"optimalPublicTransportStationDensity": {optimalPublicTransportStationDensity},' \
+            f'"negativePerceptionsOfLocalArea": {negativePerceptionsOfLocalArea},' \
+            f'"residentialOrGeographicalSegregation": {residentialOrGeographicalSegregation},' \
+            f'"costsPublicTransportUse": {costsPublicTransportUse},' \
+            f'"costsIndividualVehicleUse": {costsIndividualVehicleUse},' \
+            f'"openingHoursOfSupermarketsDailyStores": {openingHoursOfSupermarketsDailyStores},' \
+            f'"optimalProductionDensity": {optimalProductionDensity},' \
             f'"localArea": {localArea},' \
             f'"localIniHealthyFoodStore": {localIniHealthyFoodStore},' \
             f'"localIniSupermarkets": {localIniSupermarkets}, "localIniFastFoodOutlet": {localIniFastFoodOutlet},' \
@@ -174,9 +185,14 @@ def take_request(request):
     my_scenario = obj.write_scenario(obj.newBuildRateSupermarketAndHealthyFoodStore, \
                                      obj.newBuildRateFastFoodOutlet, \
                                      obj.newBuildRatePublicTransport,\
-                                     obj.newBuildRateUrbanFarms, \
-                                     obj.timeToAdjustCostsOfPublicTransport, \
-                                     obj.optimalTransportStationDensity, \
+                                     obj.newBuildRateUrbanFarmsCg, \
+                                     obj.optimalPublicTransportStationDensity, \
+                                     obj.negativePerceptionsOfLocalArea, \
+                                     obj.residentialOrGeographicalSegregation, \
+                                     obj.costsPublicTransportUse, \
+                                     obj.costsIndividualVehicleUse, \
+                                     obj.openingHoursOfSupermarketsDailyStores, \
+                                     obj.optimalProductionDensity, \
                                      obj.localArea, \
                                      obj.localIniHealthyFoodStore, \
                                      obj.localIniSupermarkets, \
