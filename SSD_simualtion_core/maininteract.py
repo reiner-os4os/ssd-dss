@@ -153,12 +153,12 @@ def take_request(request):
             f'"newBuildRatePublicTransport": {newBuildRatePublicTransport},' \
             f'"newBuildRateUrbanFarmsCg": {newBuildRateUrbanFarmsCg},'\
             f'"optimalPublicTransportStationDensity": {optimalPublicTransportStationDensity},' \
+            f'"optimalProductionDensity": {optimalProductionDensity},' \
             f'"negativePerceptionsOfLocalArea": {negativePerceptionsOfLocalArea},' \
             f'"residentialOrGeographicalSegregation": {residentialOrGeographicalSegregation},' \
             f'"costsPublicTransportUse": {costsPublicTransportUse},' \
             f'"costsIndividualVehicleUse": {costsIndividualVehicleUse},' \
             f'"openingHoursOfSupermarketsDailyStores": {openingHoursOfSupermarketsDailyStores},' \
-            f'"optimalProductionDensity": {optimalProductionDensity},' \
             f'"reductionInShelterCosts": {reductionInShelterCosts},' \
             f'"localArea": {localArea},' \
             f'"localIniHealthyFoodStore": {localIniHealthyFoodStore},' \

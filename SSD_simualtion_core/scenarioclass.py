@@ -5,8 +5,8 @@ class ScenarioClass:
     def __init__(self, city, borough_name, newBuildRateSupermarketAndHealthyFoodStore, \
                  newBuildRateFastFoodOutlet, newBuildRatePublicTransport,\
                  newBuildRateUrbanFarmsCg, optimalPublicTransportStationDensity,\
-                 costsPublicTransportUse, costsIndividualVehicleUse,\
                  negativePerceptionsOfLocalArea, residentialOrGeographicalSegregation,\
+                 costsPublicTransportUse, costsIndividualVehicleUse,\
                  openingHoursOfSupermarketsDailyStores, optimalProductionDensity,\
                  reductionInShelterCosts, \
                  localArea, localIniHealthyFoodStore, \
@@ -57,8 +57,8 @@ class ScenarioClass:
     def write_scenario(self, newBuildRateSupermarketAndHealthyFoodStore, \
                        newBuildRateFastFoodOutlet, newBuildRatePublicTransport, \
                        newBuildRateUrbanFarmsCg, optimalPublicTransportStationDensity, \
-                       costsPublicTransportUse, costsIndividualVehicleUse,\
                        negativePerceptionsOfLocalArea, residentialOrGeographicalSegregation,\
+                       costsPublicTransportUse, costsIndividualVehicleUse,\
                        openingHoursOfSupermarketsDailyStores, optimalProductionDensity,\
                        reductionInShelterCosts, \
                        localArea, localIniHealthyFoodStore, \
