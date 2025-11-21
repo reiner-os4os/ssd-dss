@@ -1,0 +1,11 @@
+NUM,Borough,HFI_t0,AvailHealthy_t0,StoreDensity_t0,PTaccess_t0,HHcirc_t0
+71,Baie-D'Urfé,0.458,0.331,0.638,1.0,0.934
+76,Sainte-Anne-de-Bellevue,0.392,0.138,3.83,1.0,0.622
+75,Montréal-Ouest,0.375,0.294,4.136,1.0,0.646
+77,Senneville,0.37,0.287,0.146,0.503,3.383
+74,Montréal-Est,0.36,0.331,6.867,1.0,0.634
+21,Le Sud-Ouest,0.138,0.323,31.764,1.0,0.105
+25,Rosemont-La Petite-Patrie,0.137,0.326,34.966,1.0,0.097
+24,Ahuntsic-Cartierville,0.137,0.328,13.076,1.0,0.111
+23,Mercier-Hochelaga-Maisonneuve,0.135,0.326,18.806,1.0,0.096
+19,Rivière-des-Prairies-Pointe-aux-Trembles,0.132,0.33,6.341,1.0,0.094
