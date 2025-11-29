@@ -106,8 +106,8 @@ class ScenarioClass:
         data['food_security']['scenarios']['base']['constants']['initialOwner'] = localIniOwner
         data['food_security']['scenarios']['base']['constants']['percentOfTenantHouseholdsInSubsidizedHousing'] = localInipercentOfTenantHouseholdsInSubsidizedHousing
         data['food_security']['scenarios']['base']['constants']['initialTotalImmigrationStatus'] = localIniTotalImmigrationStatus
-        data['food_security']['scenarios']['base']['constants']['initialTotalImmigrationStatus'] = localIniNonImmigrants
-        data['food_security']['scenarios']['base']['constants']['initialNonImmigrants'] = localIniImmigrants
+        data['food_security']['scenarios']['base']['constants']['initialNonImmigrants'] = localIniNonImmigrants
+        data['food_security']['scenarios']['base']['constants']['initialImmigrants'] = localIniImmigrants
         data['food_security']['scenarios']['base']['constants']['initialNonPermanentResidents'] = localIniNonPermanentResidents
         # Step 3: Save the modified data back to a JSON file
         with open(scenario_file, 'w') as file:

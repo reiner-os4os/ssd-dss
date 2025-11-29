@@ -1,0 +1,1312 @@
+s{UTF-8}
+immigration status risk=
+	(c immigrants * initial immigrants + c non immigrants * initial non immigrants + c non permanent residents\
+		 * initial non permanent residents
+	)/initial total immigration status
+	~	
+	~		|
+
+flow control=
+	IF THEN ELSE( number of fast food outlet and restaurants > 20 , 1 , 0 )
+	~	
+	~		|
+
+fast food outlet development=
+	new build rate fast food outlet * residential area * flow control
+	~	Number/Month
+	~		|
+
+number of fast food outlet and restaurants= INTEG (fast food outlet development,
+		initial number of fast food outlet)
+	~	Number
+	~		|
+
+fast food outlet density=number of fast food outlet and restaurants / residential area\
+		 + 0.1
+	~	Number/km2
+	~		|
+
+urban food production development=
+	new build rate urban farms CG * residential area * COS(customer demand for healthy food\
+		 * 3.14159 + 3.14159)
+	~	Number/Month
+	~		|
+
+public transport station development=
+	new build rate of public transport stations * residential area * COS(pressure on policy for public transport development\
+		 * 3.14159 + 3.14159
+	)
+	~	Number/Month
+	~	This flow is used to determine the number of public transport stations. It \
+		can take positive or negative values, which means that if the pressure on \
+		policy is 0.5, there will be no increase or decrease in the number of \
+		stations. The presence of high pressure results in an expansion of the \
+		infrastructure, while low pressure leads to a reduction in infrastructure.
+	|
+
+supermarket and healthy food store development=
+	new build rate supermarket and healthy food store * residential area * (COS(local market pressure\
+		 * 3.14159 + 3.14159) + COS(negative perceptions of local area
+	 * 3.14159) + COS(residential or geographical segregation * 3.14159)) / 3
+	~	Number/Month
+	~		|
+
+shelter flow=
+	IF THEN ELSE(shelter costs less than 30 percent stock > 0, reduction in shelter costs\
+		 * shelter costs more than 30 percent stock , 0 )
+	~	Number/Month
+	~		|
+
+shelter costs more than 30 percent stock= INTEG (
+	IF THEN ELSE(shelter costs more than 30 percent stock < (shelter costs less than 30 percent\
+		 + shelter costs more than 30 percent), -shelter flow , 0 ),
+		shelter costs more than 30 percent)
+	~	Number
+	~		|
+
+shelter costs less than 30 percent stock= INTEG (
+	shelter flow,
+		shelter costs less than 30 percent)
+	~	Number
+	~		|
+
+reduction in shelter costs=
+	0
+	~	percent/Month [-0.03,0.03,0.001]
+	~	Percent
+	|
+
+pressure on cost of living=
+	shelter costs more than 30 percent stock / (shelter costs more than 30 percent stock\
+		 + shelter costs less than 30 percent stock)
+	~	Dmnl [0,1,0.01]
+	~	Households that are able to maintain a financially stable situation are \
+		advised to allocate no more than 30% of their income toward shelter costs. \
+		This variable indicates the number of households that expend more than 30% \
+		of their income on shelter expenses. An increasing value of this variable \
+		suggests that the population in the specified area is experiencing a \
+		critical situation.
+	|
+
+shelter costs more than 30 percent=
+	23426
+	~	Number [0,?]
+	~	Number of households (owner and tentant) spending 30% or more of income on \
+		shelter costs.
+	|
+
+shelter costs less than 30 percent=
+	39242
+	~	Number [0,?]
+	~	Number of households (owner and tentant) spending less than 30% of \
+		household income on shelter costs.
+	|
+
+number of urban farms= INTEG (
+	urban food production development,
+		initial number of urban farms)
+	~	Number/Month
+	~		|
+
+new build rate urban farms CG=
+	0
+	~	Number/Month [0,0.2,0.001]
+	~	0.0889
+	|
+
+availability of healthy food in household=
+	((COS(availability of healthy food in local area * 3.14159 + 3.14159)/2 + 0.5) + (COS\
+		(strategic unhealthy eating habits
+	 * 3.14159)/2 + 0.5) + (COS(health determined purchases * 3.14159 + 3.14159)/2 + 0.5\
+		)) / 3
+	~	Dmnl
+	~	The availability of healthy foods in a household is influenced by various \
+		factors, including the availability of healthy foods in the area studied \
+		and health and cost-determined purchases. These factors are taken into \
+		account in the model, but factors caused by family circumstances, such as \
+		whether food is distributed evenly within the family, are not taken into \
+		account.
+	|
+
+optimal production density=
+	8
+	~	 [0,?,0.01]
+	~		|
+
+availability of healthy food in local area=
+	((COS(accessibility of healthy food in local area * 3.14159 + 3.14159)/2 + 0.5) + (1\
+		/(1+EXP(-10*((production denisty / optimal production density)-0.5))))) / 3
+	~	Dmnl
+	~	Imports and local production of healthy foods, outlets that sell healthy foods.
+		Availability: addresses whether or not food is actually or potentially \
+		physically present, including aspects of production, food reserves, \
+		markets and transportation, and wild foods.
+	|
+
+production denisty=
+	number of urban farms / residential area
+	~	
+	~		|
+
+initial number of urban farms=
+	0.0001
+	~	Number [0,500,1]
+	~	This includes social and collective urban-ag initiatives, commercial urban \
+		farm enterprises and municipal community gardens
+	|
+
+financial management=
+	COS(pressure on cost of living * 3.14159)/2 + 0.5
+	~	Dmnl
+	~	The financial management of a household is contingent on the cost of \
+		living incurred through housing.
+	|
+
+living cost burden=
+	((COS(pressure on cost of living * 3.14159 + 3.14159)/2 + 0.5) + (COS(insufficient food budget\
+		 * 3.14159 + 3.14159)/2 +
+	 0.5) + (COS(affordability of public transport * 3.14159)/2 + 0.5)) / 3
+	~	Dmnl [0,1,0.01]
+	~	Living cost burden refers to the proportion of a household’s income \
+		spent on essential expenses like housing, food, utilities, and \
+		transportation. A high burden indicates limited financial flexibility and \
+		increased economic vulnerability.
+	|
+
+strategic unhealthy eating habits=
+	((COS(financial management * 3.14159 + 3.14159)/2 + 0.5) + (COS(insufficient food budget\
+		 * 3.14159 + 3.14159)/2 + 0.5)) / 2
+	~	Dmnl
+	~	There can be several reasons for strategic unhealthy eating habits. In \
+		contexts of food insecurity, people often adopt different strategies to \
+		cope with the situation. They prioritise quantity over nutrition, skip \
+		meals to stretch their food supply or overeat when food is available.
+	|
+
+household food insecurity=
+	((COS(insufficient food budget * 3.14159 + 3.14159)/2 + 0.5) + (COS(availability of healthy food in household
+	 * 3.14159)/2 + 0.5) + (COS(household circumstances food insecurity * 3.14159 + 3.14159\
+		)/2 + 0.5)) 
+	/ 3
+	~	Dmnl
+	~	Household food insecurity represents the predicted proportion of \
+		households living in food insecurity in the area. This is determined by \
+		the physical infrastructure in which people live, their financial \
+		resources, and their household circumstances, such as whether they live in \
+		a single-family household or are a single parent.
+	|
+
+situational or time constraints=
+	(COS(opening hours of supermarkets daily stores * 3.14159)/2 + 0.5 + COS(accessibility and affordability of public transport\
+		 * 3.14159)/2 + 0.5) / 2
+	~	Dmnl
+	~	"situational or time constraints (including public transport and child care)"
+		Opening hours of supermarkets, daily stores, restaurants, etc.. If people \
+		can't by the food at the time they have time to shop, the time constrain \
+		in increasing.
+	|
+
+accessibility and affordability of public transport=
+	(1/(1+EXP(-10*((public transport station density / optimal public transport station density\
+		 - 0.5)))) + (COS(affordability of public transport
+	 * 3.14159 + 3.14159) / 2 + 0.5)) / 2
+	~	Dmnl
+	~	In areas characterised by inadequate transport infrastructure, public \
+		transportation systems may incur significant costs and are often \
+		unreliable. Nevertheless, these systems persist in functioning as the sole \
+		viable mode of transportation. The accessibility and affordability of \
+		public transport are key factors in reducing pressure on politicians to \
+		invest in infrastructure. The increasing costs of public transport have a \
+		negative impact on affordability.
+	|
+
+affordability of public transport=
+	1/(1+EXP(-10*(costs individual vehicle use / costs public transport use
+	-1)))
+	~	Dmnl [0,1,0.05]
+	~	Costs for public transport compared to individual means of transport, e.g., using a \
+		car.
+		If more is invested in public transport, the costs of operating the system increase, \
+		leading to higher costs for bus and subway tickets and thus reducing \
+		relative affordability. If gasoline or diesel prices rise, the costs of \
+		individual transport increase, thereby increasing the relative \
+		affordability of public transport.
+		 
+		This is modeled using a sigmoid function: when the ratio of price per km by car to \
+		price per km by public transport is equal to 1, the function should yield \
+		a value of 0.5.
+		An increase in annual prices due to inflation or other conditions is not \
+		taken into account here.
+	|
+
+costs public transport use=
+	0.47
+	~	CAD/km [0,5,0.05]
+	~	0.47
+	|
+
+costs individual vehicle use=
+	0.72
+	~	CAD / km [0,5,0.05]
+	~	0.72
+	|
+
+residential or geographical segregation=
+	0.5
+	~	Dmnl [0,1]
+	~	The residential or geographical segregation is representing the spatial \
+		separation of social groups within a city, it is a complex phenomenon and \
+		influenced by factors such as historical, economic, social and processes. \
+		A value of 0.5 means that there is no impact on the overall behavior of \
+		the system, a value of 0 means that the segregation is maximally positive, \
+		and a value of 1 means that the segregation is maximally negative.
+	|
+
+negative perceptions of local area=
+	0.5
+	~	Dmnl [0,1]
+	~	The negative perception of a neighborhood or district in a city is the \
+		result of a complex interplay of various causes. Factors such as the \
+		physical and ecological environment (built environment), \
+		social/demographic factors, and economic factors such as limited \
+		employment opportunities or declining economic activity play a role in how \
+		people perceive the area. A value of 0.5 means that there is no impact on \
+		the overall behavior of the system, a value of 0 means that the perception \
+		is maximally positive, and a value of 1 means that the perception is \
+		maximally negative.
+	|
+
+supermarket and healthy food store density=
+	number of supermakets and healthy food store / residential area
+	~	Number/km2
+	~		|
+
+public transport station density=
+	number of public transport stations / residential area
+	~	Number/km2
+	~		|
+
+number of automatic vending machines= INTEG (
+	IF THEN ELSE(fast food outlet density > 0, automatic vending machines development , \
+		0 ),
+		initial number of automatic vending machines)
+	~	Number
+	~	An automatic vending machine is a self-service device that dispenses products such \
+		as snacks, beverages, tickets, or other items.
+		These machines operate without human supervision and are commonly found in \
+		public places like offices, schools, train stations, and malls.
+	|
+
+accessibility of healthy food in local area=
+	((COS(situational or time constraints * 3.14159)/2 + 0.5) + (1/(1+EXP(-10*((supermarket and healthy food store density\
+		/fast food outlet density - 0.5)))))) / 2
+	~	Dmnl
+	~	If fast food outlet density is increasing the accessibilty is decreasing.
+		FAO definition Access: addresses whether or not households and individuals have \
+		sufficient physical and economic access to that food, see The State of \
+		Food Security and Nutrition in the World 2022.
+		This variable describes the the physical accessibilty
+	|
+
+number of supermakets and healthy food store= INTEG (
+	IF THEN ELSE(supermarket and healthy food store density > 0, supermarket and healthy food store development\
+		 , 0 ),
+		initial number of healthy food store + initial number of supermarkets + 0.1)
+	~	Number
+	~		|
+
+household type risk=
+	(c couple without children * initial couple without children + c multigenerational *\
+		 initial multigenerational + c single parent
+	 * initial single parent + c single person living alone * initial single person living alone\
+		 + c two parent * initial two parent)/initial total household types
+	~	Dmnl [0,1]
+	~	Household situation: Common-law couples, Couple without children, \
+		Multigenerational, Single person living alone, Single-parent, Two-parent
+	|
+
+housing situation risk=
+	(c owner * initial owner + c private rental market * initial private rental market +\
+		 c subsidized housing * initial subsidized housing)/initial total household types
+	~	Number
+	~		|
+
+household circumstances food insecurity=
+	household type risk + housing situation risk + immigration status risk + intercept simple
+	~	Number/km2
+	~	Household circumstances food insecurity arises when structural and \
+		demographic risk factors—such as household type, housing burden, and \
+		immigration status—combine to reduce a household’s ability to access \
+		or afford adequate, nutritious food.
+	|
+
+perceived affordability of healthy food=
+	((COS(availability of healthy food in local area * 3.14159 + 3.14159)/2 + 0.5) + (COS\
+		(objective relative cost of healthy food
+	 * 3.14159)/2 + 0.5) + (1/(1+EXP(-10*((fast food outlet density)-0.5)))) + (COS(insufficient food budget\
+		 * 3.14159)/
+	2 + 0.5)) / 4
+	~	Dmnl
+	~	fast food outlet density could be also compared with an optimal denisty, \
+		or the supermarket and healthy food stor density could be here as well \
+		integrated.
+	|
+
+health determined purchases=
+	COS(willingness to pay for healthy foods * 3.14159 + 3.14159)/2 + 0.5
+	~	Dmnl
+	~		|
+
+intercept simple=
+	0.00470216
+	~	Dmnl
+	~		|
+
+initial non immigrants=
+	55054
+	~	Number [0,?]
+	~	Total number of non-immigrants CHARACTERISTIC_ID = 1528 in the census data \
+		set.
+	|
+
+initial non permanent residents=
+	20117
+	~	Number [0,?]
+	~	Total number of non-permanent residents CHARACTERISTIC_ID = 1537 in the \
+		census data set.
+	|
+
+c non immigrants=
+	0.031434
+	~	Dmnl [0,1,0.05]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+c non permanent residents=
+	0.033475
+	~	Dmnl [0,1,0.05]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+c immigrants=
+	0.035312
+	~	Dmnl [0,1,0.05]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+initial immigrants=
+	32940
+	~	Number [0,?]
+	~	Total number of immigrants CHARACTERISTIC_ID = 1529 in the census data set.
+	|
+
+initial total immigration status=
+	108112
+	~	Number [0,?]
+	~		|
+
+initial multigenerational=
+	238
+	~	Number [0,?]
+	~	Total number of multigenerational households CHARACTERISTIC_ID = 106 in \
+		the censu data set.
+	|
+
+initial two parent=
+	5603
+	~	Number [0,?]
+	~	Total number of couples with children CHARACTERISTIC_ID = 103 in the census data set
+		5603 Ville Marie
+	|
+
+initial owner=
+	18507
+	~	Number [0,?]
+	~	Total number of owner households in non-farm, non-reserve private \
+		dwellings - 25% sample data CHARACTERISTIC_ID = 1482 in the census data \
+		set.
+	|
+
+initial private rental market=
+	initial total private rental market * (1 - percent of tenant households in subsidized housing\
+		)
+	~	Number
+	~		|
+
+initial single parent=
+	3186
+	~	Number [0,?]
+	~	Total number of one-parent family households CHARACTERISTIC_ID = 105 in \
+		the census data set.
+	|
+
+initial single person living alone=
+	35456
+	~	Number [0,?]
+	~	Total number of one-person households CHARACTERISTIC_ID = 110 in the \
+		census data set.
+	|
+
+initial subsidized housing=
+	percent of tenant households in subsidized housing * initial total private rental market
+	~	Number
+	~		|
+
+percent of tenant households in subsidized housing=
+	0.2
+	~	Dmnl
+	~	% of tenant households in subsidized housing CHARACTERISTIC_ID = 1491 in \
+		the census data set.
+	|
+
+initial total private rental market=
+	46075
+	~	Number [0,?]
+	~	Total - Tenant households in non-farm, non-reserve private dwellings - 25% \
+		sample data CHARACTERISTIC_ID = 1490 in the census data set.
+	|
+
+initial couple without children=
+	13040
+	~	Number [0,?]
+	~	Total number of couples without children CHARACTERISTIC_ID = 104 in the census data \
+		set.
+		13040 Ville Marie
+	|
+
+c couple without children=
+	0.006736
+	~	Dmnl [0,1,0.01]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+c multigenerational=
+	0.004491
+	~	Dmnl [0,1,0.01]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+initial total household types=
+	64619
+	~	Number [0,?]
+	~		|
+
+c owner=
+	0.002041
+	~	Dmnl [0,1,0.1]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+c private rental market=
+	0.073278
+	~	Dmnl [0,1,0.1]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+c single parent=
+	0.012655
+	~	Dmnl [0,1,0.01]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+c two parent=
+	0.034904
+	~	Dmnl [0,1,0.01]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+c subsidized housing=
+	0.015717
+	~	Dmnl [0,1,0.1]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+c single person living alone=
+	0.006736
+	~	Dmnl [0,1,0.01]
+	~	Determined using regression analysis, specific value for Montreal.
+	|
+
+automatic vending machines development=
+	new build rate automatic vending machines
+	~	Number/Month
+	~		|
+
+new build rate automatic vending machines=
+	0
+	~	Number/Month [0,10,1]
+	~		|
+
+initial number of automatic vending machines=
+	0
+	~	Number [0,1500,30]
+	~		|
+
+residential area=
+	3.86889
+	~	km2 [0.1,20,0.1]
+	~	Residential area 
+		3.86889 Ville Marie
+	|
+
+new build rate fast food outlet=
+	-0.0179
+	~	Number/(Month * km2) [-10,1,0.001]
+	~	new outlet opening - outlet closing. Ranges observed in the buisnesses \
+		data set -0.0493 - 0.0359 Number / (Month *km2), per residential area. As \
+		the fast food outlet activity is descreasing the past three year a value \
+		of -0.0179 is used to initailize the model.
+	|
+
+insufficient food budget=
+	((COS(pressure on cost of living * 3.14159 + 3.14159)/2 + 0.5) + (COS(financial management\
+		 * 3.14159)/2 + 0.5)) / 2
+	~	Dmnl [0,1,0.01]
+	~		|
+
+willingness to pay for healthy foods=
+	((COS(perceived affordability of healthy food * 3.14159 + 3.14159)/2 + 0.5) + (COS(vulnerability to fluctuation in living costs
+	 * 3.14159)/2 + 0.5) + (COS(insufficient food budget * 3.14159)/2 + 0.5)) / 3
+	~	Dmnl
+	~		|
+
+number of public transport stations= INTEG (
+	public transport station development,
+		initial number of public transport station + 0.001)
+	~	Number
+	~	The following transport links are included: bus station, metro. In the \
+		event that no public transport stations are present within the area of \
+		interest at the initiation of the simulation, the model will be unable to \
+		function. Consequently, a constant of 0.001 is employed.
+	|
+
+vulnerability to fluctuation in living costs=
+	(COS(living cost burden * 3.14159 + 3.14159)/2 + 0.5)
+	~	Dmnl [0,1,0.01]
+	~	Vulnerability to fluctuation in living costs refers to how sensitive a \
+		household is to changes in essential expenses—like rent, food, or \
+		energy. Households with low incomes or tight budgets face higher risk of \
+		hardship when costs rise unexpectedly.
+	|
+
+customer demand for healthy food=
+	COS(health determined purchases * 3.14159 + 3.14159) / 2 + 0.5
+	~	Dmnl [0,1]
+	~	Customer demand for healthy food links the geographic access subsystem \
+		with the household finances subsystem. Consequently, it is the link \
+		between the socioeconomic status of people living in an area and the built \
+		environment, thereby shaping the development of grocery stores.
+	|
+
+objective relative cost of healthy food=
+	COS(availability of healthy food in local area * 3.14159)/2 + 0.5
+	~	Dmnl
+	~	Hier sollten / können die Census Daten verarbeitet werden.
+		Siehe hier auch eine Quelle: \
+		https://openknowledge.fao.org/server/api/core/bitstreams/046eb34f-187d-4ba0\
+		-a752-ba08ba2c1693/content.
+		Das Verhältnis von gesunden zu ungesunden Lebensmitteln in einem Gebiet \
+		bestimmt auch die die objektiven Kosten in dem Gebiet sind. Üblicherweise \
+		sind werden ungesunde Lebensmittel an Orten angeboten die teurer sind als \
+		Lebensmittel in Supermärkten.
+	|
+
+new build rate of public transport stations=
+	0.001
+	~	Number/(Month*km2) [-0.1,0.1,0.01]
+	~	The number of public transport stops, e.g., bus stops or subway stations, \
+		that can be newly constructed in the area concerned. This variable depends \
+		on several factors, such as the financial capacity of companies or the \
+		skills of their employees in relation to working on construction sites. \
+		This figure represents the maximum potential number of stops that can be \
+		newly constructed or dismantled.
+	|
+
+pressure on policy for public transport development=
+	(1*(COS(need to shop outside locality * 3.14159 + 3.14159) / 2 + 0.5) + (COS(accessibility and affordability of public transport\
+		 * 3.14159) / 2 + 0.5)) / 2
+	~	Dmnl
+	~	The pressure on policy to invest in public transport infrastructure is influenced by \
+		accessibility and affordability, as well as the need for people to shop \
+		outside their locality.
+		It is important to acknowledge that there are a multitude of factors that \
+		exert influence on this variable. This is a limitation of the model.
+	|
+
+local market pressure=
+	((COS(need to shop outside locality * 3.14159 + 3.14159)/2 + 0.5) + (COS(customer demand for healthy food\
+		 * 3.14159 + 3.14159)/2 + 0.5)) / 2
+	~	Dmnl
+	~	Customer demand for healthy food and the need to shop outside the locality \
+		due to insufficient public transport are factors influencing the pressure \
+		on retailers to build new shops. If market pressure is low, the \
+		development of new supermarkets will also be low.
+	|
+
+optimal public transport station density=
+	8
+	~	Number/km2 [0,?]
+	~	The optimal transport station density can be derived from the 15 minutes \
+		concept.
+	|
+
+opening hours of supermarkets daily stores=
+	0.5
+	~	Dmnl [0,1,0.02]
+	~		|
+
+need to shop outside locality=
+	COS(availability of healthy food in local area * 3.14159)/2 + 0.5
+	~	Dmnl [0,1]
+	~	There is evidence that residents in low-income neighborhoods are more \
+		likely to shop outside their neighborhood but have limited access to \
+		private vehicles and are heavily reliant on public transportation. This \
+		parameter describes the pressure residents feel to leave their \
+		neighborhood in order to obtain healthy and affordable food. A value of 0 \
+		means that people can do their shopping within the neighborhood, while a \
+		value of 1 means that they have to leave the neighborhood.
+	|
+
+initial number of public transport station=
+	538
+	~	Number [0,?]
+	~	The value will be imported from the data base and depends on the area of interest.
+		538 Ville Marie and 9374 for Montreal Island.
+	|
+
+initial number of fast food outlet=
+	1527
+	~	Number [0,3000]
+	~	Get value from POSTGIS database. Depends on the area of interest.
+		1527 Ville Marie (358)
+	|
+
+initial number of healthy food store=
+	35
+	~	Number [0,?]
+	~	The value will be imported from the data base and depends on the area of interest.
+		35 Ville Marie and 568 for for Montreal Island.
+	|
+
+initial number of supermarkets=
+	313
+	~	Number [0,?]
+	~	The value will be imported from the data base and depends on the area of interest.
+		313 for Ville Marie and 2682 for Montreal island.
+	|
+
+new build rate supermarket and healthy food store=
+	0.112
+	~	Number/(Month*km2) [-1,1,0.01]
+	~	Closing and opening of supermarkets ranges observed in the business \
+		dataset: -0.0269 - 0.112 Number / (month * km²), per residential area. As \
+		the activity of supermarkets did not change much (no increase or decrease) \
+		over the last three years, a value of 0 is used to initialize the model.
+	|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 120
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*geographical_access
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,75,0
+10,1,initial number of supermarkets,560,497,56,26,8,3,0,34,-1,0,0,0,0-0-0,0-0-0,Arial Narrow|||0-128-0,0,0,0,0,0,0
+10,2,initial number of healthy food store,788,496,47,22,8,3,0,34,-1,0,0,0,-1--1--1,-1--1--1,Arial Narrow|||0-128-0,0,0,0,0,0,0
+10,3,number of supermakets and healthy food store,644,575,89,26,3,3,0,32,-1,0,0,0,0-0-0,0-0-0,Arial Narrow|||255-0-0,0,0,0,0,0,0
+1,4,2,3,1,0,0,0,1,192,1,128-128-128,|||0-0-0,1|(689,517)|
+1,5,1,3,1,0,0,0,1,192,1,128-128-128,|||0-0-0,1|(632,517)|
+10,6,local market pressure,566,362,37,37,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,7,new build rate supermarket and healthy food store,260,491,71,30,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,8,supermarket and healthy food store density,902,660,46,46,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,negative perceptions of local area,307,703,48,48,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,10,residential or geographical segregation,572,702,47,47,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,11,3,8,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(758,649)|
+10,12,initial number of fast food outlet,1336,950,52,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,13,number of fast food outlet and restaurants,1146,826,62,22,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,14,12,13,1,0,0,0,1,192,1,128-128-128,|||0-0-0,1|(1282,878)|
+12,15,48,882,821,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,16,18,13,100,0,0,22,0,192,0,-1--1--1,,1|(1043,821)|
+1,17,18,15,4,0,0,22,0,192,0,-1--1--1,,1|(941,821)|
+11,18,0,997,821,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,19,fast food outlet development,997,853,46,24,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,20,fast food outlet density,1274,740,46,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,21,13,20,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1249,795)|
+10,22,new build rate fast food outlet,833,743,58,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,23,22,18,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(950,761)|
+10,24,accessibility of healthy food in local area,1471,550,53,45,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,25,8,24,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(1225,702)|
+1,26,20,24,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1371,680)|
+10,27,availability of healthy food in local area,1767,425,64,29,8,3,0,2,-1,0,0,0,0-0-0,-1--1--1,|||0-128-0,0,0,0,0,0,0
+1,28,24,27,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(1691,569)|
+10,29,need to shop outside locality,1250,152,37,37,8,3,0,26,-1,0,0,0,0-0-0,-1--1--1,|10||0-128-0,0,0,0,0,0,0
+1,30,27,29,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1577,278)|
+1,31,29,6,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(847,214)|
+10,32,number of public transport stations,1607,429,55,24,3,3,0,26,-1,0,0,0,-1--1--1,0-0-0,|10||0-128-0,0,0,0,0,0,0
+10,33,initial number of public transport station,1605,515,72,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,34,33,32,1,0,0,0,1,192,1,128-128-128,|||0-0-0,1|(1593,474)|
+10,35,pressure on policy for public transport development,1406,295,72,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,36,accessibility and affordability of public transport,1002,310,49,49,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,37,situational or time constraints,1203,594,57,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,38,37,24,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1324,565)|
+10,39,affordability of public transport,1229,271,42,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,40,optimal public transport station density,1272,433,62,23,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,41,public transport station density,1147,501,50,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,42,32,41,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1358,523)|
+1,43,40,36,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1125,408)|
+1,44,41,36,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1067,434)|
+1,45,39,36,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1125,269)|
+1,46,29,35,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1356,218)|
+10,47,opening hours of supermarkets daily stores,1053,662,62,35,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,48,47,37,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1166,657)|
+10,49,customer demand for healthy food,1244,81,60,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,50,49,6,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(837,164)|
+1,51,36,35,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1226,217)|
+10,52,new build rate of public transport stations,1577,350,52,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+12,53,48,301,575,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,54,56,53,100,0,0,22,0,192,0,-1--1--1,,1|(372,575)|
+1,55,56,3,4,0,0,22,0,192,0,-1--1--1,,1|(500,575)|
+11,56,0,440,575,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,57,supermarket and healthy food store development,440,618,57,35,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,58,7,56,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(388,510)|
+1,59,6,56,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(454,467)|
+1,60,9,56,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(366,611)|
+1,61,10,56,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(533,618)|
+12,62,48,1387,420,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,63,65,62,100,0,0,22,0,192,0,-1--1--1,,1|(1429,420)|
+1,64,65,32,4,0,0,22,0,192,0,-1--1--1,,1|(1512,420)|
+11,65,0,1467,420,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,66,public transport station development,1467,452,72,24,40,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,67,35,65,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1456,369)|
+1,68,52,65,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1498,375)|
+12,69,0,267,-170,80,40,8,7,0,2,-1,0,0,0,0-0-0,0-0-0,|||255-0-0,0,0,0,0,0,0
+Achtung diese Verbindung nochmals genau prüfen +/- scheinen nicht zu stimmen in der originalen Publikation
+12,70,0,917,-181,80,40,8,7,0,0,-1,0,0,0,0,0,0,0,0,0
+Stock food storage outlets should be integrated here
+12,71,0,694,-179,80,40,8,7,0,2,-1,0,0,0,0-0-0,0-0-0,|||255-0-0,0,0,0,0,0,0
+customer demand for healthy food should be renamed to customer demand for local produced healthy food
+12,72,0,1204,-175,153,58,8,7,0,2,-1,0,0,0,0-0-0,0-0-0,|||255-0-0,0,0,0,0,0,0
+The following assumption is made: if demand for local food increases, more urban farms will be constructed. The products are then marketed through supermarkets and healthy food stores.
+12,73,0,487,-181,80,40,8,7,0,2,-1,0,0,0,0-0-0,0-0-0,|||255-0-0,0,0,0,0,0,0
+Paramenter need to shop outside locality ist verwirrend und sollte besser bennant werden
+10,74,residential area,923,525,50,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,75,number of automatic vending machines,1105,1298,67,24,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,76,initial number of automatic vending machines,993,1405,96,14,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,77,48,828,1298,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,78,80,75,100,0,0,22,0,192,0,-1--1--1,,1|(991,1298)|
+1,79,80,77,4,0,0,22,0,192,0,-1--1--1,,1|(885,1298)|
+11,80,0,938,1298,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,81,automatic vending machines development,938,1330,72,24,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,82,new build rate automatic vending machines,752,1253,94,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,83,76,75,1,0,0,0,1,192,1,128-128-128,|||0-0-0,1|(1072,1364)|
+1,84,82,81,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(903,1243)|
+1,85,74,41,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1026,486)|
+1,86,74,8,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(861,582)|
+1,87,8,3,1,0,0,0,1,192,0,192-192-192,|||0-0-0,1|(791,581)|
+1,88,74,20,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,89,residential area,1346,821,58,13,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,90,89,20,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1356,778)|
+10,91,health determined purchases,1308,140,43,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,92,91,49,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,93,20,75,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,94,costs individual vehicle use,1354,368,49,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,95,costs public transport use,1151,359,43,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,96,94,39,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1267,334)|
+1,97,95,39,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1226,337)|
+1,98,36,37,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1049,509)|
+10,99,initial number of urban farms,1742,176,52,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,100,number of urban farms,1954,231,55,24,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,101,48,2296,237,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,102,104,101,100,0,0,22,0,192,0,-1--1--1,,1|(2219,237)|
+1,103,104,100,4,0,0,22,0,192,0,-1--1--1,,1|(2075,237)|
+11,104,0,2147,237,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,105,urban food production development,2147,269,71,24,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,106,new build rate urban farms CG,2226,374,45,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,107,99,100,1,0,0,0,1,192,1,128-128-128,|||0-0-0,1|(1841,184)|
+1,108,106,105,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(2159,337)|
+1,109,49,104,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1739,110)|
+10,110,production denisty,1982,383,59,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,111,optimal production density,1802,290,60,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,112,100,110,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1982,305)|
+1,113,111,27,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1809,348)|
+1,114,110,27,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1854,368)|
+1,115,74,19,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(991,687)|
+1,116,74,57,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(682,413)|
+1,117,74,66,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1006,545)|
+10,118,residential area,1915,508,58,13,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,119,118,110,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1960,464)|
+1,120,118,105,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(2042,433)|
+10,121,flow control,1111,920,42,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,122,13,121,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1154,868)|
+1,123,121,19,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1046,901)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Graphs
+$-1--1--1,0,Arial Narrow|26||0-0-0|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,5,0
+12,1,0,2823,939,301,252,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+supermarket and healthy food store density,Graph
+12,2,0,3432,942,304,253,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+fast food outlet density,Graph
+12,3,0,2819,1453,306,256,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+public transport station development,Graph
+12,4,0,943,453,301,270,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+availability of healthy food in local area,Graph
+12,5,0,335,451,302,269,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+accessibility of healthy food in local area,Graph
+12,6,0,1558,1549,311,262,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+pressure on policy for public transport development,Graph
+12,7,0,1140,138,370,22,8,7,0,58,-1,0,0,0,0-0-0,0-0-0,Arial|36||0-0-0,0,0,0,0,0,0
+KPIs
+12,8,0,336,1001,304,277,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+need to shop outside locality,Graph
+12,9,0,943,1000,298,278,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+local market pressure,Graph
+12,10,0,1553,1004,308,274,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+accessibility and affordability of public transport,Graph
+12,11,0,3161,145,470,23,8,7,0,58,-1,0,0,0,0-0-0,0-0-0,Arial|36||0-0-0,0,0,0,0,0,0
+Stock and Flows
+12,12,0,2821,431,301,250,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+supermarket and healthy food store development,Graph
+12,13,0,3429,434,300,253,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+fast food outlet development,Graph
+12,14,0,1554,454,302,275,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+household food insecurity,Graph
+12,15,0,2184,171,287,54,8,79,0,0,0,0,0,0,0,0,0,0,0,0
+residential or geographical segregation,0,1,0.1
+12,16,0,2186,267,290,46,8,79,0,0,0,0,0,0,0,0,0,0,0,0
+negative perceptions of local area,0,1,0.1
+12,17,0,2186,780,313,49,8,79,0,0,0,0,0,0,0,0,0,0,0,0
+new build rate urban farms CG,0,0.01,0.001
+12,18,0,4042,435,301,256,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+urban food production development,Graph
+12,19,0,4043,943,303,249,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+production denisty,Graph
+12,20,0,2183,881,311,61,8,79,0,0,0,0,0,0,0,0,0,0,0,0
+shelter flow,0,62668,100
+12,21,0,2183,373,307,67,8,79,0,0,0,0,0,0,0,0,0,0,0,0
+opening hours of supermarkets daily stores,0,1,0.05
+12,22,0,2182,489,304,62,8,79,0,0,0,0,0,0,0,0,0,0,0,0
+new build rate supermarket and healthy food store,0,100,1
+12,23,0,2183,587,304,47,8,79,0,0,0,0,0,0,0,0,0,0,0,0
+new build rate fast food outlet,-10,10,1
+12,24,0,2188,683,316,50,8,79,0,0,0,0,0,0,0,0,0,0,0,0
+new build rate of public transport stations,0,1,0.01
+12,25,0,3436,1459,302,254,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+public transport station density,Graph
+12,26,0,941,1552,299,269,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+insufficient food budget,Graph
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*household_finances
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,104,0
+10,1,fast food outlet density,787,377,52,20,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,2,number of fast food outlet and restaurants,706,631,57,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,3,2,1,1,1,43,0,1,0,0,128-128-128,|||0-0-0,1|(774,603)|
+10,4,objective relative cost of healthy food,526,513,57,29,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,5,availability of healthy food in local area,580,641,56,19,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,6,accessibility of healthy food in local area,607,786,71,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,7,6,5,1,1,0,0,0,0,0,-1--1--1,,1|(511,737)|
+10,8,customer demand for healthy food,497,916,71,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,9,customer demand for healthy food,434,553,60,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,10,5,4,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(531,580)|
+10,11,perceived affordability of healthy food,578,398,70,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,12,4,11,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(526,459)|
+10,13,health determined purchases,339,414,74,20,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,14,13,9,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(371,500)|
+10,15,willingness to pay for healthy foods,574,284,56,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,16,11,15,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(604,350)|
+1,17,15,13,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(418,328)|
+1,18,1,11,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(698,371)|
+1,19,5,11,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(633,515)|
+10,20,vulnerability to fluctuation in living costs,675,184,62,39,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,21,20,15,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(598,224)|
+10,22,living cost burden,860,96,64,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,23,22,20,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(742,115)|
+10,24,pressure on cost of living,1013,129,32,32,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,25,24,22,1,0,43,0,1,0,0,0-128-64,|||0-0-0,1|(957,100)|
+10,26,insufficient food budget,857,273,49,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,27,26,22,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(841,189)|
+1,28,26,15,0,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(0,0)|
+1,29,26,11,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(707,303)|
+12,30,0,832,-163,116,41,3,7,0,0,-1,0,0,0,0,0,0,0,0,0
+The cost of living index is determined using the shelter costs from the census data. The term "shelter costs" refers to the proportion of household income that is allocated to accommodation.
+1,31,24,26,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(918,198)|
+10,32,financial management,1091,275,38,22,8,3,0,26,-1,0,0,0,-1--1--1,-1--1--1,|10||0-128-0,0,0,0,0,0,0
+1,33,24,32,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1064,192)|
+1,34,32,26,0,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(0,0)|
+10,35,strategic unhealthy eating habits,1172,389,60,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,36,32,35,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1166,327)|
+1,37,26,35,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(996,338)|
+10,38,household food insecurity,1038,542,62,28,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,39,26,38,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1004,397)|
+10,40,availability of healthy food in household,823,655,60,30,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,41,5,40,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(672,652)|
+1,42,40,38,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(953,642)|
+10,43,number of automatic vending machines,745,551,79,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,44,residential area,745,551,43,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,45,initial total immigration status,1496,640,72,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,46,household type risk,1170,583,43,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,47,initial total household types,1483,228,64,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,48,housing situation risk,1170,583,51,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,49,household circumstances food insecurity,1187,471,54,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,50,immigration status risk,1413,616,48,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,51,50,49,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,52,household type risk,1413,616,43,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,53,52,49,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,54,intercept simple,1413,616,37,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,55,54,49,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,56,housing situation risk,1413,616,51,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,57,56,49,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,58,49,38,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1099,481)|
+10,59,residential area,745,551,43,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,60,59,1,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,61,35,40,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(938,519)|
+1,62,13,40,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(478,674)|
+10,63,affordability of public transport,609,100,82,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,64,63,22,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(731,64)|
+10,65,optimal production density,580,678,72,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,66,65,5,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,67,production denisty,580,678,44,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,68,67,5,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,69,shelter costs more than 30 percent,1091,43,70,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,70,shelter costs less than 30 percent,1404,292,73,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,71,shelter costs less than 30 percent stock,1295,231,68,19,3,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,72,shelter costs more than 30 percent stock,1290,88,70,19,3,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,73,71,24,1,0,45,0,1,0,0,255-0-0,|||0-0-0,1|(1132,206)|
+1,74,72,24,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1131,76)|
+1,75,69,72,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1219,39)|
+1,76,70,71,1,0,0,0,1,192,1,128-128-128,|||0-0-0,1|(1300,284)|
+1,77,79,72,100,0,0,22,0,192,0,-1--1--1,,1|(1292,125)|
+1,78,79,71,4,0,0,22,0,192,0,-1--1--1,,1|(1292,184)|
+11,79,0,1292,150,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,80,shelter flow,1342,150,42,22,40,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,81,reduction in shelter costs,1155,179,42,22,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,82,81,79,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1230,165)|
+1,83,72,79,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1262,123)|
+1,84,70,72,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1445,162)|
+1,85,71,79,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1324,190)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Loops
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,68,0
+12,1,0,703,456,376,441,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+accessibility of healthy food in local area,Loops
+12,2,0,1453,426,368,411,8,15,0,0,2,0,0,0,0,0,0,0,0,0
+accessibility of healthy food in local area,Causes Strip
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*complete_model
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,60,0
+10,1,accessibility and affordability of public transport,701,239,59,59,6,3,0,4,-1,0,0,0,0-0-0,255-128-192,|||0-0-0,0,0,0,0,0,0
+10,2,negative perceptions of local area,331,693,46,46,6,3,0,4,-1,0,0,0,0-0-0,255-128-192,|||0-0-0,0,0,0,0,0,0
+10,3,residential or geographical segregation,553,702,45,45,6,3,0,4,-1,0,0,0,0-0-0,255-128-192,|||0-0-0,0,0,0,0,0,0
+10,4,supermarket and healthy food store development,462,552,57,57,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,5,2,4,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(401,650)|
+1,6,3,4,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(486,651)|
+10,7,local market pressure,462,588,49,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,8,7,4,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,9,local market pressure,534,218,49,49,6,3,0,4,-1,0,0,0,0-0-0,255-128-192,|||0-0-0,0,0,0,0,0,0
+1,10,9,4,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(434,349)|
+10,11,number of supermakets and healthy food store,653,559,75,30,3,3,0,4,-1,0,0,0,0-0-0,64-128-128,|||0-0-0,0,0,0,0,0,0
+1,12,4,11,0,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(0,0)|
+10,13,initial number of supermarkets,684,600,62,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,14,13,11,0,1,0,0,0,64,1,-1--1--1,,1|(0,0)|
+10,15,supermarket and healthy food store density,775,677,46,46,6,3,0,4,-1,0,0,0,0-0-0,255-128-192,|||0-0-0,0,0,0,0,0,0
+1,16,11,15,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(689,632)|
+10,17,initial number of healthy food store,684,600,69,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,18,17,11,0,1,0,0,0,64,1,-1--1--1,,1|(0,0)|
+10,19,new build rate supermarket and healthy food store,480,603,69,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,20,19,4,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,21,accessibility of healthy food in local area,1242,687,45,45,2,3,0,4,-1,0,0,0,0-0-0,128-255-128,|||0-0-0,0,0,0,0,0,0
+1,22,15,21,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1019,730)|
+10,23,fast food outlet density,1089,661,58,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,24,23,21,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,25,fast food outlet density,1011,825,46,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,26,25,21,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1130,765)|
+10,27,situational or time constraints,973,630,57,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+10,28,opening hours of supermarkets daily stores,1047,494,70,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,29,28,27,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,30,27,21,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1101,688)|
+10,31,public transport station density,1089,661,61,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,32,public transport station density,997,454,50,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,33,number of public transport stations,997,496,68,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,34,33,32,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,35,number of public transport stations,1323,349,55,24,3,3,0,4,-1,0,0,0,0-0-0,64-128-128,|||0-0-0,0,0,0,0,0,0
+1,36,35,32,1,0,43,0,1,0,0,255-128-0,|||0-0-0,1|(1163,428)|
+10,37,optimal public transport station density,981,356,54,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,38,public transport station development,1314,419,78,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,39,38,35,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,40,public transport station development,1131,349,72,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,41,40,35,0,0,0,0,1,192,0,0-128-0,|||0-0-0,1|(0,0)|
+10,42,new build rate of public transport stations,1161,395,63,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,43,42,40,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,44,pressure on policy for public transport development,1161,395,79,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,45,44,40,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,46,pressure on policy for public transport development,1073,196,66,35,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,47,1,46,1,0,45,2,1,0,0,255-128-0,|||0-0-0,1|(856,161)|
+1,48,46,40,1,0,43,0,1,0,0,255-128-0,|||0-0-0,1|(1131,274)|
+10,49,customer demand for healthy food,521,411,71,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,50,49,9,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,51,37,1,1,0,45,2,1,0,0,255-128-0,|||0-0-0,1|(851,335)|
+1,52,32,1,1,0,45,2,1,0,0,255-128-0,|||0-0-0,1|(842,384)|
+10,53,affordability of public transport,745,306,53,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,54,53,1,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,55,need to shop outside locality,745,306,59,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,56,need to shop outside locality,1009,293,59,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,57,56,46,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,58,affordability of public transport,934,232,42,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,59,58,1,1,0,45,2,1,0,0,255-128-0,|||0-0-0,1|(851,248)|
+10,60,need to shop outside locality,850,76,47,47,6,3,0,4,-1,0,0,0,0-0-0,255-128-192,|||0-0-0,0,0,0,0,0,0
+1,61,60,46,1,0,43,0,1,0,0,255-128-0,|||0-0-0,1|(981,111)|
+1,62,60,9,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(642,131)|
+10,63,customer demand for healthy food,908,-34,60,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,64,63,9,1,0,43,2,1,0,0,255-0-0,|||0-0-0,1|(676,55)|
+10,65,availability of healthy food in local area,850,141,71,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,66,65,60,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,67,availability of healthy food in local area,1266,130,71,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,68,initial number of public transport station,1378,400,62,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,69,68,35,0,1,0,0,0,64,1,-1--1--1,,1|(0,0)|
+10,70,number of fast food outlet and restaurants,862,854,57,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,71,70,25,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,72,fast food outlet development,804,894,58,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,73,new build rate fast food outlet,641,892,58,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,74,availability of healthy food in local area,1453,350,47,47,2,3,0,4,-1,0,0,0,0-0-0,128-255-128,|||0-0-0,0,0,0,0,0,0
+1,75,21,74,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1379,539)|
+1,76,74,60,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1227,173)|
+10,77,perceived affordability of healthy food,1201,928,70,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,78,74,77,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1418,775)|
+1,79,25,77,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1064,894)|
+10,80,objective relative cost of healthy food,1163,981,75,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,81,80,77,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,82,objective relative cost of healthy food,1368,712,47,47,6,3,0,4,-1,0,0,0,0-0-0,0-255-0,|||0-0-0,0,0,0,0,0,0
+1,83,74,82,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1451,564)|
+1,84,82,77,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1292,827)|
+10,85,willingness to pay for healthy foods,1449,944,56,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,86,77,85,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1319,970)|
+10,87,health determined purchases,908,8,43,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,88,87,63,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,89,health determined purchases,1687,579,59,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,90,85,89,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1495,762)|
+1,91,89,63,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1623,231)|
+10,92,availability of healthy food in household,1644,760,66,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,93,74,92,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1577,581)|
+10,94,household food insecurity,2002,877,61,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,95,household food insecurity,1815,823,50,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,96,92,95,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1740,763)|
+10,97,insufficient food budget,1449,986,62,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,98,97,85,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,99,insufficient food budget,2002,803,62,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,100,99,95,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,101,insufficient food budget,1650,922,49,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,102,101,95,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1707,863)|
+1,103,101,85,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1557,910)|
+1,104,101,77,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1474,872)|
+10,105,pressure on cost of living,1704,985,54,10,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,106,105,101,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,107,pressure on cost of living,1544,1104,36,36,6,3,0,4,-1,0,0,0,0-0-0,0-255-0,|||0-0-0,0,0,0,0,0,0
+1,108,107,101,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1629,1029)|
+10,109,financial management,1704,985,53,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,110,109,101,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,111,financial management,1750,1127,44,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,112,107,111,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1626,1152)|
+1,113,111,101,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1723,1039)|
+10,114,living cost burden,1325,1159,64,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,115,107,114,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1430,1113)|
+1,116,101,114,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1448,1023)|
+10,117,vulnerability to fluctuation in living costs,1449,986,66,27,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,118,117,85,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,119,vulnerability to fluctuation in living costs,1165,1040,48,48,6,3,0,4,-1,0,0,0,0-0-0,0-255-0,|||0-0-0,0,0,0,0,0,0
+1,120,114,119,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1236,1118)|
+1,121,119,85,1,0,45,2,1,0,0,255-0-0,|||0-0-0,1|(1317,1054)|
+10,122,strategic unhealthy eating habits,1994,663,72,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,123,strategic unhealthy eating habits,2163,858,60,24,3,3,0,4,-1,0,0,0,0-0-0,192-192-192,|||0-0-0,0,0,0,0,0,0
+1,124,111,123,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1986,1107)|
+1,125,101,123,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(1912,988)|
+10,126,household circumstances food insecurity,2002,803,66,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,127,126,95,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,128,number of automatic vending machines,956,896,79,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,129,residential area,956,896,43,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,130,129,25,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,131,residential area,997,496,43,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,132,131,32,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,133,residential area,775,741,43,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,134,133,15,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,135,initial number of fast food outlet,804,894,62,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,136,residential area,1608,288,43,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,137,123,92,1,0,45,2,1,192,0,255-0-0,|||0-0-0,1|(1948,668)|
+1,138,15,11,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,139,costs individual vehicle use,878,302,61,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,140,139,58,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,141,costs public transport use,1035,285,53,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,142,141,58,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,143,1,27,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,144,89,92,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,145,residential area,462,627,43,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,146,145,4,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,147,residential area,1131,391,43,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,148,147,40,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,149,optimal production density,1453,415,72,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,150,149,74,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,151,production denisty,1453,415,44,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,152,151,74,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,153,shelter costs less than 30 percent stock,1544,1158,83,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,154,153,107,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,155,shelter costs more than 30 percent stock,1544,1158,83,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,156,155,107,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,157,58,114,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*household_circumstances
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,89,0
+10,1,household type risk,759,175,38,18,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,c couple without children,831,37,93,20,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,3,initial couple without children,891,66,87,14,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,4,c multigenerational,1057,202,62,18,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,5,initial multigenerational,1041,235,62,18,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,6,c single person living alone,1002,259,85,16,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,7,initial single person living alone,937,301,90,17,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,8,c single parent,1052,150,48,18,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,9,initial single parent,1060,176,72,17,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,10,c two parent,955,98,39,18,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,11,initial two parent,1028,124,58,10,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,12,initial total household types,277,490,59,18,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,13,household food insecurity,386,469,50,24,8,3,0,24,-1,0,0,0,0-0-0,-1--1--1,|10||0-0-0,0,0,0,0,0,0
+10,14,insufficient food budget,263,332,62,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,15,14,13,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,16,availability of healthy food in household,263,332,79,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,17,16,13,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,18,housing situation risk,819,476,54,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,19,c private rental market,941,393,68,26,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,20,initial private rental market,1275,381,60,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,21,c subsidized housing,1032,560,57,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,22,initial subsidized housing,1286,581,53,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,23,c owner,870,577,42,22,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,24,initial owner,974,598,42,22,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,25,percent of tenant households in subsidized housing,1041,478,99,27,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,26,25,22,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1157,547)|
+1,27,25,20,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1143,408)|
+10,28,initial total private rental market,1257,478,55,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+1,29,28,20,0,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(0,0)|
+1,30,28,22,0,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(0,0)|
+10,31,household circumstances food insecurity,607,483,60,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,32,immigration status risk,652,772,59,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,33,c non immigrants,868,677,42,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,34,c immigrants,940,741,59,22,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,35,c non permanent residents,894,848,72,24,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,36,initial non immigrants,1007,702,70,23,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,37,initial immigrants,1033,771,55,22,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,38,initial non permanent residents,1009,811,99,27,8,3,0,2,-1,0,0,0,0-0-0,0-0-0,|||0-128-0,0,0,0,0,0,0
+10,39,initial total immigration status,1497,1051,59,24,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,40,intercept simple,572,358,51,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,41,1,31,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(668,332)|
+1,42,18,31,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(716,464)|
+1,43,32,31,1,0,0,0,1,0,0,0-128-0,|||0-0-0,1|(612,630)|
+1,44,40,31,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(572,428)|
+1,45,31,13,1,0,43,0,1,0,0,0-128-0,|||0-0-0,1|(515,439)|
+1,46,2,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(775,104)|
+1,47,10,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(848,127)|
+1,48,8,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(913,155)|
+1,49,4,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(893,198)|
+1,50,6,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(877,240)|
+1,51,7,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(813,238)|
+1,52,5,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(887,217)|
+1,53,9,1,0,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(0,0)|
+1,54,11,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(886,141)|
+1,55,3,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(823,111)|
+1,56,20,18,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1047,401)|
+1,57,19,18,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(851,415)|
+1,58,21,18,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(919,539)|
+1,59,23,18,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(825,536)|
+1,60,22,18,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(1049,544)|
+1,61,24,18,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(884,552)|
+1,62,33,32,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(763,702)|
+1,63,34,32,0,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(0,0)|
+1,64,35,32,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(775,827)|
+1,65,36,32,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(791,731)|
+1,66,37,32,0,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(0,0)|
+1,67,38,32,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(811,811)|
+1,68,12,18,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(551,568)|
+1,69,12,1,1,0,0,0,1,192,0,128-128-128,|||0-0-0,1|(500,316)|
+10,70,initial total immigration status,352,667,63,24,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,71,70,32,1,0,0,0,0,192,0,-1--1--1,,1|(486,755)|
+///---\\\
+:L<%^E!@
+1:Baseline.vdfx
+4:Time
+5:household circumstances food insecurity
+9:Baseline
+19:89,5
+24:0
+25:120
+26:120
+57:1
+54:0
+55:0
+82:0
+86:0
+59:0
+56:0
+58:0
+71:0
+110:0
+111:0
+44:0
+46:0
+45:4
+49:0
+50:1
+51:
+52:
+53:
+43:D:\OneDrive - open science for open societies - os4os\01_Dissertation\Models_and_Data\Vensim\food_security\current5.txt
+47:
+48:
+23:0
+18:Test_Sensitivity.vsc
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:1
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:D:\OneDrive - open science for open societies - os4os\01_Dissertation\Models_and_Data\Vensim\food_security\current5.txt
+103:8,8,8,3,8
+105:0,0,0,0,0,0,0,0,0,0
+104:Arial Narrow|11||0-0-0|0-0-0|-1--1--1|0-0-255|192-192-192|-1--1--1

@@ -33,6 +33,9 @@ These machines operate without human supervision and are commonly found in publi
 					<eqn>
 					initial_number_of_fast_food_outlet
 					</eqn>
+					<inflow>
+					fast food outlet development
+					</inflow>
 			</stock>
 			<stock name="number_of_public_transport_stations">
 				<units>Number</units>
@@ -60,6 +63,26 @@ These machines operate without human supervision and are commonly found in publi
 					<inflow>
 					urban food production development
 					</inflow>
+			</stock>
+			<stock name="shelter_costs_less_than_30_percent_stock">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+					shelter_costs_less_than_30_percent
+					</eqn>
+					<inflow>
+					shelter flow
+					</inflow>
+			</stock>
+			<stock name="shelter_costs_more_than_30_percent_stock">
+				<units>Number</units>
+				<doc></doc>
+					<eqn>
+					shelter_costs_more_than_30_percent
+					</eqn>
+					<outflow>
+					shelter flow
+					</outflow>
 			</stock>
 			<aux name="accessibility_and_affordability_of_public_transport">
 				<units>Dmnl</units>
@@ -105,32 +128,36 @@ An increase in annual prices due to inflation or other conditions is not taken i
 				<doc>Imports and local production of healthy foods, outlets that sell healthy foods.
 Availability: addresses whether or not food is actually or potentially physically present, including aspects of production, food reserves, markets and transportation, and wild foods.</doc>
 					<eqn>
-	((COS(accessibility_of_healthy_food_in_local_area * 3.14159 + 3.14159)/2 + 0.5) + ((1/(1+EXP(-10*((production_denisty /
-	 optimal_production_density)-0.5)))))) / 3					</eqn>
+	((COS(accessibility_of_healthy_food_in_local_area * 3.14159 + 3.14159)/2 + 0.5) + (1/(1+EXP(-10*((production_denisty / optimal_production_density)-0.5))))) / 3					</eqn>
 			</aux>
 			<aux name="customer_demand_for_healthy_food">
 				<units>Dmnl</units>
-				<doc></doc>
+				<doc>Customer demand for healthy food links the geographic access subsystem with the household finances subsystem. Consequently, it is the link between the socioeconomic status of people living in an area and the built environment, thereby shaping the development of grocery stores.</doc>
 					<eqn>
 	COS(health_determined_purchases * 3.14159 + 3.14159) / 2 + 0.5					</eqn>
 			</aux>
 			<aux name="fast_food_outlet_density">
 				<units>Number/km2</units>
 				<doc></doc>
-					<eqn>
-	(number_of_fast_food_outlet_and_restaurants + number_of_automatic_vending_machines) / residential_area + 0.1					</eqn>
+					<eqn>number_of_fast_food_outlet_and_restaurants / residential_area + 0.1					</eqn>
 			</aux>
 			<aux name="fast_food_outlet_development">
 				<units>Number/Month</units>
 				<doc></doc>
 					<eqn>
-	new_build_rate_fast_food_outlet					</eqn>
+	new_build_rate_fast_food_outlet * residential_area * flow_control					</eqn>
 			</aux>
 			<aux name="financial_management">
 				<units>Dmnl</units>
 				<doc>The financial management of a household is contingent on the cost of living incurred through housing.</doc>
 					<eqn>
 	COS(pressure_on_cost_of_living * 3.14159)/2 + 0.5					</eqn>
+			</aux>
+			<aux name="flow_control">
+				<units></units>
+				<doc></doc>
+					<eqn>
+	(number_of_fast_food_outlet_and_restaurants > 20 ) * 1					</eqn>
 			</aux>
 			<aux name="health_determined_purchases">
 				<units>Dmnl</units>
@@ -169,17 +196,18 @@ Availability: addresses whether or not food is actually or potentially physicall
 				<units></units>
 				<doc></doc>
 					<eqn>
-	(c_immigrants * initial_immigrants + c_non_immigrants * initial_non_immigrants + c_non_permanent_residents * initial_non_permanent_residents)/initial_total_household_types					</eqn>
+	(c_immigrants * initial_immigrants + c_non_immigrants * initial_non_immigrants + c_non_permanent_residents * initial_non_permanent_residents
+	)/initial_total_immigration_status					</eqn>
 			</aux>
 			<aux name="initial_private_rental_market">
 				<units>Number</units>
-				<doc>Total - Tenant households in non-farm, non-reserve private dwellings - 25% sample data CHARACTERISTIC_ID = 1490 in the census data set.</doc>
+				<doc></doc>
 					<eqn>
 	initial_total_private_rental_market * (1 - percent_of_tenant_households_in_subsidized_housing)					</eqn>
 			</aux>
 			<aux name="initial_subsidized_housing">
 				<units>Number</units>
-				<doc>Total of tenant households in subsidized housing CHARACTERISTIC_ID = 1491 in the census data set.</doc>
+				<doc></doc>
 					<eqn>
 	percent_of_tenant_households_in_subsidized_housing * initial_total_private_rental_market					</eqn>
 			</aux>
@@ -198,13 +226,13 @@ Availability: addresses whether or not food is actually or potentially physicall
 			</aux>
 			<aux name="local_market_pressure">
 				<units>Dmnl</units>
-				<doc></doc>
+				<doc>Customer demand for healthy food and the need to shop outside the locality due to insufficient public transport are factors influencing the pressure on retailers to build new shops. If market pressure is low, the development of new supermarkets will also be low.</doc>
 					<eqn>
 	((COS(need_to_shop_outside_locality * 3.14159 + 3.14159)/2 + 0.5) + (COS(customer_demand_for_healthy_food * 3.14159 + 3.14159)/2 + 0.5)) / 2					</eqn>
 			</aux>
 			<aux name="need_to_shop_outside_locality">
 				<units>Dmnl</units>
-				<doc>Evidence suggests that residents in low-income neighbourhoods more often need to shop outside their locality but have limited access to private vehicles and rely heavily on public transport. This parameter describes the pressure of residents to leave their neibourhoods to by healthy and affordable foods. A value of 0 indicates that the people can do their grocery within the area, a value of 1 indicates that the people need to live the area.</doc>
+				<doc>There is evidence that residents in low-income neighborhoods are more likely to shop outside their neighborhood but have limited access to private vehicles and are heavily reliant on public transportation. This parameter describes the pressure residents feel to leave their neighborhood in order to obtain healthy and affordable food. A value of 0 means that people can do their shopping within the neighborhood, while a value of 1 means that they have to leave the neighborhood.</doc>
 					<eqn>
 	COS(availability_of_healthy_food_in_local_area * 3.14159)/2 + 0.5					</eqn>
 			</aux>
@@ -228,7 +256,7 @@ Das Verhältnis von gesunden zu ungesunden Lebensmitteln in einem Gebiet bestimm
 				<units>Dmnl</units>
 				<doc>Households that are able to maintain a financially stable situation are advised to allocate no more than 30% of their income toward shelter costs. This variable indicates the number of households that expend more than 30% of their income on shelter expenses. An increasing value of this variable suggests that the population in the specified area is experiencing a critical situation.</doc>
 					<eqn>
-	shelter_costs_more_than_30_percent / (shelter_costs_more_than_30_percent + shelter_costs_less_than_30_percent)					</eqn>
+	shelter_costs_more_than_30_percent_stock / (shelter_costs_more_than_30_percent_stock + shelter_costs_less_than_30_percent_stock)					</eqn>
 			</aux>
 			<aux name="pressure_on_policy_for_public_transport_development">
 				<units>Dmnl</units>
@@ -253,15 +281,14 @@ It is important to acknowledge that there are a multitude of factors that exert 
 				<units>Number/Month</units>
 				<doc>This flow is used to determine the number of public transport stations. It can take positive or negative values, which means that if the pressure on policy is 0.5, there will be no increase or decrease in the number of stations. The presence of high pressure results in an expansion of the infrastructure, while low pressure leads to a reduction in infrastructure.</doc>
 					<eqn>
-	new_build_rate_of_public_transport_stations * COS(pressure_on_policy_for_public_transport_development * 3.14159 + 3.14159)					</eqn>
+	new_build_rate_of_public_transport_stations * residential_area * COS(pressure_on_policy_for_public_transport_development * 3.14159 + 3.14159
+	)					</eqn>
 			</aux>
-			<aux name="shelter_costs_less_than_30_percent">
-				<units>Number</units>
-				<doc>Number of households (owner and tentant) spending less than 30% of household income on shelter costs.
-Census data ID 1466.
-39242 Ville Marie</doc>
+			<aux name="shelter_flow">
+				<units>Number/Month</units>
+				<doc></doc>
 					<eqn>
-	39242 + 23426 - shelter_costs_more_than_30_percent					</eqn>
+	(shelter_costs_less_than_30_percent_stock > 0) * (reduction_in_shelter_costs * shelter_costs_more_than_30_percent_stock)					</eqn>
 			</aux>
 			<aux name="situational_or_time_constraints">
 				<units>Dmnl</units>
@@ -286,13 +313,14 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 				<units>Number/Month</units>
 				<doc></doc>
 					<eqn>
-	new_build_rate_supermarket_and_healthy_food_store * (COS(local_market_pressure * 3.14159 + 3.14159) + COS(negative_perceptions_of_local_area * 3.14159) + COS(residential_or_geographical_segregation * 3.14159)) / 3					</eqn>
+	new_build_rate_supermarket_and_healthy_food_store * residential_area * (COS(local_market_pressure * 3.14159 + 3.14159) + COS(negative_perceptions_of_local_area
+	 * 3.14159) + COS(residential_or_geographical_segregation * 3.14159)) / 3					</eqn>
 			</aux>
 			<aux name="urban_food_production_development">
 				<units>Number/Month</units>
 				<doc></doc>
 					<eqn>
-	new_build_rate_urban_farms_CG * COS(customer_demand_for_healthy_food * 3.14159 + 3.14159)					</eqn>
+	new_build_rate_urban_farms_CG * residential_area * COS(customer_demand_for_healthy_food * 3.14159 + 3.14159)					</eqn>
 			</aux>
 			<aux name="vulnerability_to_fluctuation_in_living_costs">
 				<units>Dmnl</units>
@@ -373,35 +401,17 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 					<eqn>
 	0.034904					</eqn>
 			</aux>
-			<aux name="coeff_household">
-				<units></units>
-				<doc></doc>
-					<eqn>
-	3.20924					</eqn>
-			</aux>
-			<aux name="coeff_housing">
-				<units></units>
-				<doc></doc>
-					<eqn>
-	0.502839					</eqn>
-			</aux>
-			<aux name="coeff_immi">
-				<units></units>
-				<doc></doc>
-					<eqn>
-	-0.146239					</eqn>
-			</aux>
 			<aux name="costs_individual_vehicle_use">
 				<units>CAD/km</units>
 				<doc>0.72</doc>
 					<eqn>
-	0.5					</eqn>
+	0.72					</eqn>
 			</aux>
 			<aux name="costs_public_transport_use">
 				<units>CAD/km</units>
 				<doc>0.47</doc>
 					<eqn>
-	0.5					</eqn>
+	0.47					</eqn>
 			</aux>
 			<aux name="initial_couple_without_children">
 				<units>Number</units>
@@ -450,29 +460,29 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 			<aux name="initial_number_of_healthy_food_store">
 				<units>Number</units>
 				<doc>The value will be imported from the data base and depends on the area of interest.
-35 Ville Marie</doc>
+35 Ville Marie and 568 for for Montreal Island.</doc>
 					<eqn>
 	35					</eqn>
 			</aux>
 			<aux name="initial_number_of_public_transport_station">
 				<units>Number</units>
-				<doc>The value will be imported from the GIS.
-538 Ville Marie</doc>
+				<doc>The value will be imported from the data base and depends on the area of interest.
+538 Ville Marie and 9374 for Montreal Island.</doc>
 					<eqn>
 	538					</eqn>
 			</aux>
 			<aux name="initial_number_of_supermarkets">
 				<units>Number</units>
 				<doc>The value will be imported from the data base and depends on the area of interest.
-313 Ville Marie</doc>
+313 for Ville Marie and 2682 for Montreal island.</doc>
 					<eqn>
 	313					</eqn>
 			</aux>
 			<aux name="initial_number_of_urban_farms">
 				<units>Number</units>
-				<doc></doc>
+				<doc>This includes social and collective urban-ag initiatives, commercial urban farm enterprises and municipal community gardens</doc>
 					<eqn>
-	0					</eqn>
+	0.0001					</eqn>
 			</aux>
 			<aux name="initial_owner">
 				<units>Number</units>
@@ -506,7 +516,7 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 			</aux>
 			<aux name="initial_total_private_rental_market">
 				<units>Number</units>
-				<doc>Total - Owner households in non-farm, non-reserve private dwellings - 25% sample data CHARACTERISTIC_ID = 1482 in the census data set.</doc>
+				<doc>Total - Tenant households in non-farm, non-reserve private dwellings - 25% sample data CHARACTERISTIC_ID = 1490 in the census data set.</doc>
 					<eqn>
 	46075					</eqn>
 			</aux>
@@ -525,7 +535,7 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 			</aux>
 			<aux name="negative_perceptions_of_local_area">
 				<units>Dmnl</units>
-				<doc>crime rate</doc>
+				<doc>The negative perception of a neighborhood or district in a city is the result of a complex interplay of various causes. Factors such as the physical and ecological environment (built environment), social/demographic factors, and economic factors such as limited employment opportunities or declining economic activity play a role in how people perceive the area. A value of 0.5 means that there is no impact on the overall behavior of the system, a value of 0 means that the perception is maximally positive, and a value of 1 means that the perception is maximally negative.</doc>
 					<eqn>
 	0.5					</eqn>
 			</aux>
@@ -536,26 +546,26 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 	0					</eqn>
 			</aux>
 			<aux name="new_build_rate_fast_food_outlet">
-				<units>Number/Month</units>
-				<doc>new outlet opening - outlet closing</doc>
+				<units>Number/(Month*km2)</units>
+				<doc>new outlet opening - outlet closing. Ranges observed in the buisnesses data set -0.0493 - 0.0359 Number / (Month *km2), per residential area. As the fast food outlet activity is descreasing the past three year a value of -0.0179 is used to initailize the model.</doc>
 					<eqn>
-	2					</eqn>
+	-0.0179					</eqn>
 			</aux>
 			<aux name="new_build_rate_of_public_transport_stations">
-				<units>Number/Month</units>
+				<units>Number/(Month*km2)</units>
 				<doc>The number of public transport stops, e.g., bus stops or subway stations, that can be newly constructed in the area concerned. This variable depends on several factors, such as the financial capacity of companies or the skills of their employees in relation to working on construction sites. This figure represents the maximum potential number of stops that can be newly constructed or dismantled.</doc>
 					<eqn>
-	0.01					</eqn>
+	0.001					</eqn>
 			</aux>
 			<aux name="new_build_rate_supermarket_and_healthy_food_store">
-				<units>Number/Month</units>
-				<doc>Average value determined from the Montreal business dataset for the last 10 years.</doc>
+				<units>Number/(Month*km2)</units>
+				<doc>Closing and opening of supermarkets ranges observed in the business dataset: -0.0269 - 0.112 Number / (month * km²), per residential area. As the activity of supermarkets did not change much (no increase or decrease) over the last three years, a value of 0 is used to initialize the model.</doc>
 					<eqn>
-	2					</eqn>
+	0.112					</eqn>
 			</aux>
 			<aux name="new_build_rate_urban_farms_CG">
 				<units>Number/Month</units>
-				<doc></doc>
+				<doc>0.0889</doc>
 					<eqn>
 	0					</eqn>
 			</aux>
@@ -569,7 +579,7 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 				<units></units>
 				<doc></doc>
 					<eqn>
-	0.2					</eqn>
+	8					</eqn>
 			</aux>
 			<aux name="optimal_public_transport_station_density">
 				<units>Number/km2</units>
@@ -583,6 +593,12 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 					<eqn>
 	0.2					</eqn>
 			</aux>
+			<aux name="reduction_in_shelter_costs">
+				<units>percent/Month</units>
+				<doc>Percent</doc>
+					<eqn>
+	0					</eqn>
+			</aux>
 			<aux name="residential_area">
 				<units>km2</units>
 				<doc>Residential area 
@@ -592,21 +608,19 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 			</aux>
 			<aux name="residential_or_geographical_segregation">
 				<units>Dmnl</units>
-				<doc>Gini + others</doc>
+				<doc>The residential or geographical segregation is representing the spatial separation of social groups within a city, it is a complex phenomenon and influenced by factors such as historical, economic, social and processes. A value of 0.5 means that there is no impact on the overall behavior of the system, a value of 0 means that the segregation is maximally positive, and a value of 1 means that the segregation is maximally negative.</doc>
 					<eqn>
 	0.5					</eqn>
 			</aux>
-			<aux name="residential_segregation">
-				<units>Dmnl</units>
-				<doc>The residential segregation is represented by the calculation of the Multigroup Segregation Index. The value is representing the overall segregation across all groups in an area.</doc>
+			<aux name="shelter_costs_less_than_30_percent">
+				<units>Number</units>
+				<doc>Number of households (owner and tentant) spending less than 30% of household income on shelter costs.</doc>
 					<eqn>
-	0.5					</eqn>
+	39242					</eqn>
 			</aux>
 			<aux name="shelter_costs_more_than_30_percent">
-				<units>Dmnl</units>
-				<doc>Number of households (owner and tentant) spending 30% or more of income on shelter costs.
-Census data ID 1467
-23426 Ville Marie</doc>
+				<units>Number</units>
+				<doc>Number of households (owner and tentant) spending 30% or more of income on shelter costs.</doc>
 					<eqn>
 	23426					</eqn>
 			</aux>

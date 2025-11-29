@@ -2,6 +2,6 @@
 ### Folder and its content ###
 SSD_run_simulation/Figures/
 
-
+.xlsx
 .env
 config.py
