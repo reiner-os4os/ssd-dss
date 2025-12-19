@@ -1,53 +1,69 @@
+# ================================================================================
+# Dockerfile for SSD-DSS REST Server
+# ================================================================================
+# This Dockerfile creates a container image for running the SSD-DSS REST server
+# with Jupyter notebook support and system dynamics modeling capabilities.
+#
+# Base Image: jupyter/base-notebook (includes Jupyter and Python)
+# Python Version: 3.9
+# Note: Python 3.10.9 is available but not currently used (see commented line below)
+# ================================================================================
+
+# Use Jupyter base notebook image with Python 3.9
 #FROM jupyter/base-notebook:python-3.10.9
 FROM jupyter/base-notebook:python-3.9
+
+# Switch to root user to install system dependencies
 USER root
-# Update and upgrade the system, -y option is used for automatic execution
-# the user will not asked for response
+
+# ================================================================================
+# System Package Updates
+# ================================================================================
+# Update package manager repositories and upgrade existing packages
+# -y flag: automatically answer "yes" to prompts without user interaction
 RUN sudo apt-get update -y && sudo apt-get upgrade -y
 
-# 
+# ================================================================================
+# Python Package Manager Setup
+# ================================================================================
+# Upgrade pip to the latest version for better package installation reliability
 RUN pip install --upgrade pip
 
-# Install the BPTK-Py python libraries
+# ================================================================================
+# System Dynamics Modeling Dependencies
+# ================================================================================
+# Install BPTK-Py (Business Process Thinking Kit for Python)
+# Version 1.9.0: Core library for system dynamics simulation and modeling
 RUN pip install BPTK-Py==1.9.0
+
+# ================================================================================
+# REST API Framework Dependencies
+# ================================================================================
+# Flask-Cors 4.0.0: Enable Cross-Origin Resource Sharing for REST API endpoints
 RUN pip install Flask-Cors==4.0.0
+
+# Werkzeug 2.3.0: WSGI utility library for HTTP request/response handling
+# Used as the underlying HTTP server for Flask applications
 RUN pip install Werkzeug==2.3.0
 
-# Install GeaoAlchemy, sqlalchemy and nipython-sql needed to work with POSTGIS database
+# ================================================================================
+# Geospatial & Database Dependencies
+# ================================================================================
+# These packages enable interaction with PostGIS (PostgreSQL spatial database)
+# and support SQL-based queries from Jupyter notebooks
+
+# GeoAlchemy2 0.15.1: SQLAlchemy extension for spatial databases
+# Provides ORM support for geographic data types (geometry, geography)
 RUN pip install GeoAlchemy2==0.15.1
+
+# SQLAlchemy 1.4.41: Python ORM (Object-Relational Mapping) library
+# Enables database abstraction and query building across different database systems
 RUN pip install sqlalchemy==1.4.41
+
+# SQLAlchemy-Utils 0.41.2: Utility functions and data types for SQLAlchemy
+# Provides additional functionality like JSON types and validators
 RUN pip install SQLAlchemy-Utils==0.41.2
+
+# ipython-sql 0.5.0: IPython magic commands for SQL queries
+# Allows running raw SQL queries directly in Jupyter notebook cells using %%sql syntax
 RUN pip install ipython-sql==0.5.0
-
-# failed, check version number RUN pip install psycopg2==2.9.9
-#USER 1001
-
-# Delete later, not needed for the REST server
-# Install the libgl1-mesa-glx library, this is needed to start QGIS from Jupyter
-# also here -y command is required
-#RUN sudo apt install -y libgl1-mesa-glx
-# Install QGIS from conda-forge, see https://anaconda.org/conda-forge/qgis
-#RUN conda install -c conda-forge qgis=3.22.16
-# Path for python 3.10.9
-#RUN conda develop -n base ['/opt/conda/share/qgis/python', '/home/jovyan/.local/share/QGIS/QGIS3/profiles/default/python', '/home/jovyan/.local/share/QGIS/QGIS3/profiles/default/python/plugins', '/opt/conda/share/qgis/python/plugins', '/opt/conda/share/qgis/python/plugins', '/opt/conda/share/qgis/python', '/home/jovyan/work', '/opt/conda/lib/python310.zip', '/opt/conda/lib/python3.10', '/opt/conda/lib/python3.10/lib-dynload', '/opt/conda/lib/python3.10/site-packages', '/home/jovyan/.local/share/QGIS/QGIS3/profiles/default/python']
-# Path for python 3.9
-#RUN conda develop -n base ['/opt/conda/share/qgis/python', '/home/jovyan/.local/share/QGIS/QGIS3/profiles/default/python', '/home/jovyan/.local/share/QGIS/QGIS3/profiles/default/python/plugins', '/opt/conda/share/qgis/python/plugins', '/opt/conda/share/qgis/python/plugins', '/opt/conda/share/qgis/python', '/home/jovyan', '/opt/conda/lib/python39.zip', '/opt/conda/lib/python3.9', '/opt/conda/lib/python3.9/lib-dynload', '/opt/conda/lib/python3.9/site-packages', '/home/jovyan/.local/share/QGIS/QGIS3/profiles/default/python']
-
-# Install pandas, see https://pypi.org/project/pandas/
-#RUN pip install pandas==2.1.3
-# Install geopandas from conda-forge, see https://anaconda.org/conda-forge/geopandas
-#RUN conda install -c conda-forge geopandas==0.14.2
-# Install python modules required for GIS work
-# see https://anaconda.org/conda-forge/contextily
-#RUN conda install -c conda-forge contextily==1.4.0
-# see https://anaconda.org/anaconda/openpyxl
-#RUN conda install -c conda-forge openpyxl==3.0.10
-# see https://anaconda.org/conda-forge/ipyleaflet
-#RUN conda install -c conda-forge ipyleaflet==0.17.4
-# see https://anaconda.org/conda-forge/osmnx
-#RUN conda install -c conda-forge osmnx=1.7.1
-# see https://anaconda.org/conda-forge/descartes
-#RUN conda install -c conda-forge descartes==1.1.0
-# see https://anaconda.org/anaconda/seaborn
-#RUN conda install -c anaconda seaborn=0.12.2
-#RUN conda install -y conda-build -c conda-forge
