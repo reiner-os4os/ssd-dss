@@ -27,7 +27,7 @@ There are two ways to deploy the system:
 |------|---------|
 | **Dockerfile** | Container image definition with all dependencies and Python packages |
 | **docker-compose.yml** | Orchestration file defining services, volumes, ports, and environment variables |
-| **.env_template** | Environment configuration (container name, ports, volume paths) |
+| **.env_template** | Environment configuration template (copy to `.env` and edit) |
 
 ## Building Your Own Image
 
@@ -77,3 +77,44 @@ You can check the server is running by point your browser at localhost:5000 whic
 
 ### Test some queries
 Test queries using the api-usage notebook
+
+## Environment (`.env`)
+
+This repository includes `.env_template` as an example. Before running `docker-compose`:
+
+1. Copy the template to a local `.env` file in the same directory:
+
+```bash
+cp .env_template .env
+```
+
+2. Edit `.env` to set values appropriate for your host (container name, port mappings, and
+     a host path for persistent data).
+
+Important variables:
+- `IMAGE_VERSION` — Docker image to use (default: `reineros4os/ssd-server:1`).
+- `JUPYTER_PORT` — Host:container port mapping for Jupyter (e.g. `8012:8888`).
+- `FLASK_PORT` — Host:container port mapping for the Flask API (e.g. `5000:5000`).
+- `PATH_PERSISTENT_VOLUME` — Host path mounted into the container at `/home/jovyan/work/`.
+
+Windows notes for `PATH_PERSISTENT_VOLUME`:
+- With Docker Desktop on Windows, prefer a path under your user directory and ensure
+    the drive is shared with Docker (e.g. `C:\Users\you\ssd-data`). Use forward slashes
+    or escape backslashes in the `.env` file if needed. Example:
+
+```dotenv
+PATH_PERSISTENT_VOLUME=C:/Users/you/ssd-data
+```
+
+After updating `.env`, start the services with:
+
+```bash
+docker-compose up -d
+```
+
+To apply changes to `.env`, recreate containers with:
+
+```bash
+docker-compose down
+docker-compose up -d --build
+```
