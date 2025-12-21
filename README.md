@@ -1,6 +1,6 @@
-# ssd-dss — System Dynamics & Decision Support for Sustainable Food Systems ✅
+# ssd-dss — Spatial System Dynamics & Decision Support System for Sustainable Food Systems ✅
 
-This repository contains code, models, and example notebooks developed as part of work on modeling sustainable urban food production and food security. Below is a concise description of what you'll find in the top-level folders and what to expect when exploring the project.
+This repository contains code, models, and example notebooks developed as part of my work on modeling food security in urban areas. Below is a concise description of what you'll find in the top-level folders and what to expect when exploring the project.
 
 ---
 
@@ -15,8 +15,8 @@ This repository contains code, models, and example notebooks developed as part o
 	- Includes `docker-compose.yml`, `Dockerfile`, and a small `README.md` with instructions for building and running the containerised service.
 
 - **`SSD_model_library/`** 📦
-	- Library of system dynamics models used in the project (model files and variants).
-	- Examples: `food_security.xmile`, `food_security47.mdl` (model definitions that can be loaded by standard SD tools that support XMILE/Vensim formats).
+	- Library of system dynamics models (currently only a food insecurity model to simulate household food insecurity) used in the project (model files and variants).
+	- Examples: `food_security.xmile`, `food_security.mdl` (model definitions that can be loaded by standard SD tools that support XMILE/Vensim formats).
 
 - **`SSD_run_simulation/`** ▶️
 	- Notebooks to run simulations and inspect outputs.
