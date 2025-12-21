@@ -1,45 +1,44 @@
-# Documentation
-Welcome, in this GitHub page you can find the code documentation of my Phd thesis. 
-I tried to document as acurate as possible, in case you want to use the simulation models and you find in the documentation is something missing you can always conatct me.  this repository all necessary steps are documented to run the simulation models.
-The focus of this thesis is on the modeling of sustainable food production in urban areas to evaluate food insecurity for vulnerable people. 
-Methods of spatial analysis and simulation of dynamic interactions between actors are applied to answer the following research questions . 
+# ssd-dss — System Dynamics & Decision Support for Sustainable Food Systems ✅
 
-RQ1: How can sustainable food production be quantified in cities and what variables have the main impact on production quantities?
-RQ2: How do dietary choices impact the food production carbon footprint? 
-RQ3: How can a system model be developed to describe the interdependencies of urban food production and policy changes to increase food security for vulnerable people.
+This repository contains code, models, and example notebooks developed as part of work on modeling sustainable urban food production and food security. Below is a concise description of what you'll find in the top-level folders and what to expect when exploring the project.
 
-The eaxmples provide a step by step how to create your own models and intergrate it into the simulation environment.
+---
 
-## Folder qgisbptksd
-In this folder you can find the Dockerfile, docker-compose file and a documentaion on how to start and connect QGIS, the python based system dynamics environment BTPK and a jupyter notebook.
+## Repository structure & what to expect 📁
 
-## Folder REST_API
-In this folder you will find an example on how two modify the REST API example provided in the bptk_into.  
+- **`Jupyter_notebooks/`** 🔬
+	- Contains exploratory and reproducible notebooks used for data analysis and visualisation.
+	- **`Food_establishments/`**: example notebooks such as `Food_establishments.ipynb`, `Food_establishments_simple_analysis.ipynb`, and `Food_establishments_time_analysis.ipynb` with analyses of food establishment datasets, temporal trends, and example plots.
 
-## Folder Data_analysis
-Script to upload census data into PostGIS and create local .geojson
+- **`REST-server_deployment/`** 🚀
+	- Infrastructure for deploying a lightweight REST service used to serve or collect simulation data.
+	- Includes `docker-compose.yml`, `Dockerfile`, and a small `README.md` with instructions for building and running the containerised service.
 
-## run follwing commnads inside the container
-cd work/bptk_intro
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+- **`SSD_model_library/`** 📦
+	- Library of system dynamics models used in the project (model files and variants).
+	- Examples: `food_security.xmile`, `food_security47.mdl` (model definitions that can be loaded by standard SD tools that support XMILE/Vensim formats).
 
-## start jupyter notebook
-pip install Flask-Cors 
+- **`SSD_run_simulation/`** ▶️
+	- Notebooks to run simulations and inspect outputs.
+	- Key files: `Run_simulation.ipynb` (run scenarios), `Analyse_simulation.ipynb` (summary statistics and diagnostics), `Szenario_plot.ipynb` (visualize scenario outcomes).
 
-## Foler Vensim_models
-In this folder the Vensim models are stored 
+- **`SSD_simualtion_core/`** ⚙️
+	- Core application scripts and utilities powering simulations and integrations.
+	- Typical files: `application.py` (application entrypoint or REST app), `connectquery_db.py` (database helpers), `maininteract.py` (interactive runner), `scenarioclass.py` (scenario abstractions), plus a small `README.md` with implementation notes.
+	- Note: folder name contains a typo (`simualtion`) — keep this in mind when navigating or scripting paths.
 
-## Relevant publications
-More information on the motivation and background on why "I think" we need that kind of simulation environment please see following publications:
+- **Root files** 📄
+	- `LICENSE` — project license
+	- This top-level `README.md` — overview and pointers
 
-Jani, Anant; Exner, Andreas; Braun, Reiner; Braun, Brigitte; Torri, Luisa; Verhoeven, Sofie et al. (2022): Transitions to food democracy through multilevel governance. In: Frontiers in Sustainable Food Systems 6. DOI: 10.3389/fsufs.2022.1039127.
+---
 
-Braun, Reiner; Hertweck, Dieter; Eicker, Ursula (2022): An approach to cluster the research field of the food-energy-water nexus to determine modeling capabilities at different levels using text mining and cluster analysis. In: Energy Nexus, S. 100101. DOI: 10.1016/j.nexus.2022.100101.
+## Getting started — quick pointers 💡
 
-Braun, Reiner; Padsala, Rushikesh; Malmir, Tahereh; Mohammadi, Soufia; Eicker, Ursula (2021): Using 3D CityGML for the Modeling of the Food Waste and Wastewater Generation-A Case Study for the City of Montréal. In: Frontiers in big data 4, S. 662011. DOI: 10.3389/fdata.2021.662011.
+- To run example analyses, open the notebooks in `Jupyter_notebooks/` or `SSD_run_simulation/` with JupyterLab or Jupyter Notebook.
+- To deploy the REST service, follow the instructions in `REST-server_deployment/` (build the Docker image and run `docker-compose up`).
+- For model editing or inspection, open the files in `SSD_model_library/` with a compatible system-dynamics tool (XMILE/Vensim-compatible editors).
+- See `SSD_simualtion_core/README.md` for details on running the core application and database connections.
 
-Eicker, Ursula; Weiler, Verena; Schumacher, Jürgen; Braun, Reiner (2020): On the design of an urban data and modeling platform and its application to urban district analyses. In: Energy and Buildings 217, S. 109954. DOI: 10.1016/j.enbuild.2020.109954.
+**Contact / issues:** If anything is missing or unclear, please open an issue or contact the repository owner for details.
 
-A. D. M. Sawyer et al., "Dynamics of the complex food environment underlying dietary intake in low-income groups: a systems map of associations extracted from a systematic umbrella literature review," International Journal of Behavioral Nutrition and Physical Activity, vol. 18, no. 1, p. 96, 2021, doi: 10.1186/s12966-021-01164-1.
