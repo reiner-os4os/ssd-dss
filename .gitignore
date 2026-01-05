@@ -1,7 +1,7 @@
-### SSD gitignore ile ###
-### Folder and its content ###
-SSD_run_simulation/Figures/
-
-.xlsx
-.env
-config.py
+### SSD gitignore File ###
+*.xlsx
+*.env
+*config.py
+*libraries.txt
+*commands.txt
+*BPTK-Py-Server-documentation.txt
