@@ -1,6 +1,6 @@
 # SSD-DSS REST Server Deployment
 
-A Docker-based deployment for the System Dynamics Simulation - Decision Support System (SSD-DSS) with Jupyter Notebook and REST API server capabilities.
+A Docker-based deployment for the Spatial System Dynamics Simulation - Decision Support System (SSD-DSS) with Jupyter Notebook and REST API server capabilities.
 
 ## Overview
 
@@ -34,7 +34,7 @@ There are two ways to deploy the system:
 To build a custom image, run:
 
 ```bash
-docker build -f Dockerfile -t yourname/ssd-server:1 .
+docker build -f Dockerfile -< yourname/ssd-server:1 .
 ```
 
 Or with Docker Compose:
