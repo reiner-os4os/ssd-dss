@@ -120,8 +120,8 @@ An increase in annual prices due to inflation or other conditions is not taken i
 				<units>Dmnl</units>
 				<doc>The availability of healthy foods in a household is influenced by various factors, including the availability of healthy foods in the area studied and health and cost-determined purchases. These factors are taken into account in the model, but factors caused by family circumstances, such as whether food is distributed evenly within the family, are not taken into account.</doc>
 					<eqn>
-	((COS(availability_of_healthy_food_in_local_area * 3.14159 + 3.14159)/2 + 0.5) + (COS(strategic_unhealthy_eating_habits
-	 * 3.14159)/2 + 0.5) + (COS(health_determined_purchases * 3.14159 + 3.14159)/2 + 0.5)) / 3					</eqn>
+	((COS(availability_of_healthy_food_in_local_area * 3.14159 + 3.14159)/2 + 0.5) + (COS(health_determined_purchases * 3.14159
+	 + 3.14159)/2 + 0.5) + (COS(strategic_unhealthy_eating_habits * 3.14159)/2 + 0.5)) / 3					</eqn>
 			</aux>
 			<aux name="availability_of_healthy_food_in_local_area">
 				<units>Dmnl</units>
@@ -157,7 +157,7 @@ Availability: addresses whether or not food is actually or potentially physicall
 				<units></units>
 				<doc></doc>
 					<eqn>
-	(number_of_fast_food_outlet_and_restaurants > 20 ) * 1					</eqn>
+	IF_THEN_ELSE( number_of_fast_food_outlet_and_restaurants > 20 , 1 , 0 )					</eqn>
 			</aux>
 			<aux name="health_determined_purchases">
 				<units>Dmnl</units>
@@ -221,8 +221,7 @@ Availability: addresses whether or not food is actually or potentially physicall
 				<units>Dmnl</units>
 				<doc>Living cost burden refers to the proportion of a household’s income spent on essential expenses like housing, food, utilities, and transportation. A high burden indicates limited financial flexibility and increased economic vulnerability.</doc>
 					<eqn>
-	((COS(pressure_on_cost_of_living * 3.14159 + 3.14159)/2 + 0.5) + (COS(insufficient_food_budget * 3.14159 + 3.14159)/2 +
-	 0.5) + (COS(affordability_of_public_transport * 3.14159)/2 + 0.5)) / 3					</eqn>
+	((COS(pressure_on_cost_of_living * 3.14159 + 3.14159)/2 + 0.5) + (COS(affordability_of_public_transport * 3.14159)/2 + 0.5)) / 2					</eqn>
 			</aux>
 			<aux name="local_market_pressure">
 				<units>Dmnl</units>
@@ -271,6 +270,12 @@ It is important to acknowledge that there are a multitude of factors that exert 
 					<eqn>
 	number_of_urban_farms / residential_area					</eqn>
 			</aux>
+			<aux name="propotion_of_income_on_food_budget">
+				<units>Dmnl</units>
+				<doc></doc>
+					<eqn>((COS(situational_or_time_constraints * 3.14159)/2 + 0.5) + (COS(insufficient_food_budget * 3.14159 + 3.14159
+	)/2 + 0.5) + (COS(living_cost_burden * 3.14159 + 3.14159)/2 + 0.5))/3					</eqn>
+			</aux>
 			<aux name="public_transport_station_density">
 				<units>Number/km2</units>
 				<doc></doc>
@@ -288,7 +293,7 @@ It is important to acknowledge that there are a multitude of factors that exert 
 				<units>Number/Month</units>
 				<doc></doc>
 					<eqn>
-	(shelter_costs_less_than_30_percent_stock > 0) * (reduction_in_shelter_costs * shelter_costs_more_than_30_percent_stock)					</eqn>
+	IF_THEN_ELSE(shelter_costs_less_than_30_percent_stock > 0, reduction_in_shelter_costs * shelter_costs_more_than_30_percent_stock , 0 )					</eqn>
 			</aux>
 			<aux name="situational_or_time_constraints">
 				<units>Dmnl</units>
@@ -301,7 +306,9 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 				<units>Dmnl</units>
 				<doc>There can be several reasons for strategic unhealthy eating habits. In contexts of food insecurity, people often adopt different strategies to cope with the situation. They prioritise quantity over nutrition, skip meals to stretch their food supply or overeat when food is available.</doc>
 					<eqn>
-	((COS(financial_management * 3.14159 + 3.14159)/2 + 0.5) + (COS(insufficient_food_budget * 3.14159 + 3.14159)/2 + 0.5)) / 2					</eqn>
+	DELAY1I(((COS(financial_management * 3.14159 + 3.14159)/2 + 
+	0.5) + (COS(insufficient_food_budget * 3.14159 + 3.14159)/2 + 0.5) + (COS(household_food_insecurity * 3.14159 + 3.14159
+	)/2 + 0.5))/3 , 1 ,household_circumstances_food_insecurity) + household_circumstances_food_insecurity*0					</eqn>
 			</aux>
 			<aux name="supermarket_and_healthy_food_store_density">
 				<units>Number/km2</units>
@@ -324,9 +331,10 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 			</aux>
 			<aux name="vulnerability_to_fluctuation_in_living_costs">
 				<units>Dmnl</units>
-				<doc>Vulnerability to fluctuation in living costs refers to how sensitive a household is to changes in essential expenses—like rent, food, or energy. Households with low incomes or tight budgets face higher risk of hardship when costs rise unexpectedly.</doc>
+				<doc>Vulnerability to fluctuation in living costs refers to how sensitive a household is to changes in essential expenses like rent, food, or energy. Households with low incomes or tight budgets face higher risk of hardship when costs rise unexpectedly.</doc>
 					<eqn>
-	(COS(living_cost_burden * 3.14159 + 3.14159)/2 + 0.5)					</eqn>
+	(COS(propotion_of_income_on_food_budget * 3.14159 + 3.14159)/2
+	 + 0.5)					</eqn>
 			</aux>
 			<aux name="willingness_to_pay_for_healthy_foods">
 				<units>Dmnl</units>
@@ -403,9 +411,10 @@ Opening hours of supermarkets, daily stores, restaurants, etc.. If people can't 
 			</aux>
 			<aux name="costs_individual_vehicle_use">
 				<units>CAD/km</units>
-				<doc>0.72</doc>
+				<doc>0.625
+https://www.canada.ca/en/revenue-agency/corporate/about-canada-revenue-agency-cra/travel-directive/appendix-a-cra-kilometric-rates-jan-2026.html</doc>
 					<eqn>
-	0.72					</eqn>
+	0.625					</eqn>
 			</aux>
 			<aux name="costs_public_transport_use">
 				<units>CAD/km</units>
